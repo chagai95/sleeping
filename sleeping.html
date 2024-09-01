@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dino Stay Booking</title>
+    <title>Scenic Stay Booking</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #4285F4;
-            --secondary-color: #34A853;
-            --background-color: rgba(248, 249, 250, 0.9);
-            --text-color: #202124;
-            --border-color: #DADCE0;
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: rgba(255, 255, 255, 0.8);
+            --text-color: #2c3e50;
+            --border-color: #bdc3c7;
         }
         body {
             font-family: 'Roboto', Arial, sans-serif;
@@ -19,7 +19,7 @@
             color: var(--text-color);
             margin: 0;
             padding: 20px;
-            background-image: url('/api/placeholder/1920/1080');
+            background-image: url('https://images.unsplash.com/photo-1501785888041-af3ef285b470?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1920&q=80');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
@@ -32,7 +32,7 @@
             border-radius: 8px;
             box-shadow: 0 1px 2px 0 rgba(60,64,67,0.3), 0 1px 3px 1px rgba(60,64,67,0.15);
             padding: 20px;
-            backdrop-filter: blur(5px);
+            backdrop-filter: blur(10px);
         }
         h1, h2 {
             color: var(--primary-color);
@@ -66,7 +66,7 @@
             transition: background-color 0.3s;
         }
         button:hover {
-            background-color: #3367D6;
+            background-color: #2980b9;
         }
         .calendar-table {
             width: 100%;
@@ -80,7 +80,7 @@
             text-align: center;
         }
         .calendar-table th {
-            background-color: #F1F3F4;
+            background-color: #ecf0f1;
             font-weight: normal;
         }
         .calendar-day {
@@ -92,7 +92,7 @@
             top: 5px;
             left: 5px;
             font-size: 12px;
-            color: #5F6368;
+            color: #7f8c8d;
         }
         .occupancy-bar {
             position: absolute;
@@ -133,10 +133,10 @@
             font-weight: bold;
         }
         .booking-dates {
-            color: #5F6368;
+            color: #7f8c8d;
         }
         .error-message {
-            color: #D93025;
+            color: #e74c3c;
             margin-top: 10px;
             background-color: rgba(255, 255, 255, 0.8);
             padding: 10px;
@@ -146,7 +146,7 @@
 </head>
 <body>
     <div class="container">
-        <h1>Dino Stay Booking</h1>
+        <h1>Scenic Stay Booking</h1>
         
         <form id="bookingForm">
             <input type="text" id="name" placeholder="Your Name" required>
@@ -167,6 +167,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/pikaday.min.js"></script>
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/pikaday/1.8.0/css/pikaday.min.css">
     <script>
+        // The JavaScript code remains the same as in the previous version
         let bookings = [];
         const bookingForm = document.getElementById('bookingForm');
         const bookingList = document.getElementById('bookingList');
