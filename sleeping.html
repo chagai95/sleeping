@@ -1,9 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Calendar</title>
+    <title>Calendario de Reservas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,16 +13,22 @@
             background-color: #f0f0f0;
         }
         .welcome-message {
-            background-color: #4a90e2;
+            background-image: linear-gradient(to right, red, orange, yellow, green, blue, indigo, violet);
             color: white;
-            padding: 20px;
+            padding: 30px;
             text-align: center;
-            font-size: 24px;
+            font-size: 48px;
             margin-bottom: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            font-family: 'Rubik Doodle Shadow', cursive;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
         }
         .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 20px;
         }
         .button {
@@ -31,18 +38,18 @@
             padding: 10px 20px;
             cursor: pointer;
             font-size: 1em;
-            margin-right: 10px;
+            border-radius: 5px;
         }
         .calendar-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
+            background-color: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 5px;
-            margin-bottom: 20px;
         }
         .calendar-header {
             background-color: #4a90e2;
@@ -52,7 +59,7 @@
             font-weight: bold;
         }
         .calendar-day {
-            background-color: white;
+            background-color: #f9f9f9;
             border: 1px solid #ddd;
             padding: 10px;
             min-height: 100px;
@@ -73,37 +80,53 @@
             color: #4a90e2;
             margin-top: 5px;
         }
+        .form-container {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
         .form {
-            display: none;
+            flex: 1;
             background-color: white;
             padding: 20px;
-            margin-top: 20px;
-            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
         input, button {
             margin: 10px 0;
-            padding: 5px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #4a90e2;
+            margin-top: 0;
         }
     </style>
 </head>
 <body>
-    <div class="welcome-message">¡Chagai te espera!</div>
+    <div class="welcome-message">¡CHAGAI TE ESPERA!</div>
     <div class="controls">
-        <button id="bookStayBtn" class="button">Book Stay</button>
-        <button id="updateStayBtn" class="button">Update Stay</button>
+        <button id="prevMonth" class="button">Mes Anterior</button>
+        <h2 id="currentMonthYear"></h2>
+        <button id="nextMonth" class="button">Mes Siguiente</button>
     </div>
     <div id="calendarContainer" class="calendar-container"></div>
-    <div id="bookForm" class="form">
-        <input type="text" id="newGuestName" placeholder="Your Name">
-        <input type="date" id="bookStartDate">
-        <input type="date" id="bookEndDate">
-        <button onclick="bookStay()">Book Stay</button>
-    </div>
-    <div id="updateForm" class="form">
-        <input type="text" id="guestName" placeholder="Your Name">
-        <input type="date" id="newStartDate">
-        <input type="date" id="newEndDate">
-        <button onclick="updateStay()">Submit Update</button>
+    <div class="form-container">
+        <div id="bookForm" class="form">
+            <h2>Reservar Estancia</h2>
+            <input type="text" id="newGuestName" placeholder="Tu Nombre">
+            <input type="date" id="bookStartDate">
+            <input type="date" id="bookEndDate">
+            <button onclick="bookStay()" class="button">Reservar Estancia</button>
+        </div>
+        <div id="updateForm" class="form">
+            <h2>Actualizar Estancia</h2>
+            <input type="text" id="guestName" placeholder="Tu Nombre">
+            <input type="date" id="newStartDate">
+            <input type="date" id="newEndDate">
+            <button onclick="updateStay()" class="button">Actualizar Estancia</button>
+        </div>
     </div>
 
     <script>
@@ -126,64 +149,58 @@
             { name: "Paxi", startDate: "2024-09-15", endDate: "2024-09-15", color: "#33FF80" }
         ];
 
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+        let currentDate = new Date('2024-09-01');
 
-        function renderCalendars() {
+        function renderCalendar() {
             const containerEl = document.getElementById('calendarContainer');
             containerEl.innerHTML = '';
+            
+            const calendarEl = document.createElement('div');
+            calendarEl.className = 'calendar';
+            
+            // Month header
+            document.getElementById('currentMonthYear').textContent = currentDate.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
 
-            const startDate = new Date('2024-09-01');
-            for (let i = 0; i < 3; i++) {
-                const monthStart = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
-                const monthEnd = new Date(startDate.getFullYear(), startDate.getMonth() + i + 1, 0);
-                
-                const calendarEl = document.createElement('div');
-                calendarEl.className = 'calendar';
-                
-                // Month header
-                const monthHeader = document.createElement('div');
-                monthHeader.className = 'calendar-header';
-                monthHeader.style.gridColumn = '1 / span 7';
-                monthHeader.textContent = monthStart.toLocaleString('default', { month: 'long', year: 'numeric' });
-                calendarEl.appendChild(monthHeader);
+            // Day headers
+            days.forEach(day => {
+                const headerEl = document.createElement('div');
+                headerEl.className = 'calendar-header';
+                headerEl.textContent = day;
+                calendarEl.appendChild(headerEl);
+            });
 
-                // Day headers
-                days.forEach(day => {
-                    const headerEl = document.createElement('div');
-                    headerEl.className = 'calendar-header';
-                    headerEl.textContent = day;
-                    calendarEl.appendChild(headerEl);
-                });
+            const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
 
-                // Fill in empty days at the start
-                for (let d = 0; d < monthStart.getDay(); d++) {
-                    calendarEl.appendChild(document.createElement('div'));
-                }
-
-                // Add days
-                for (let d = 1; d <= monthEnd.getDate(); d++) {
-                    const currentDate = new Date(monthStart.getFullYear(), monthStart.getMonth(), d);
-                    const dayEl = document.createElement('div');
-                    dayEl.className = 'calendar-day';
-
-                    const dateEl = document.createElement('div');
-                    dateEl.className = 'date';
-                    dateEl.textContent = `${d.toString().padStart(2, '0')}/${(monthStart.getMonth() + 1).toString().padStart(2, '0')}`;
-                    dayEl.appendChild(dateEl);
-
-                    const guestsForDay = getGuestsForDay(currentDate);
-                    renderGuests(dayEl, guestsForDay);
-
-                    const countEl = document.createElement('div');
-                    countEl.className = 'guest-count';
-                    countEl.textContent = `Total: ${guestsForDay.length}`;
-                    dayEl.appendChild(countEl);
-
-                    calendarEl.appendChild(dayEl);
-                }
-
-                containerEl.appendChild(calendarEl);
+            // Fill in empty days at the start
+            for (let d = 0; d < monthStart.getDay(); d++) {
+                calendarEl.appendChild(document.createElement('div'));
             }
+
+            // Add days
+            for (let d = 1; d <= monthEnd.getDate(); d++) {
+                const dayDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), d);
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+
+                const dateEl = document.createElement('div');
+                dateEl.className = 'date';
+                dateEl.textContent = d;
+                dayEl.appendChild(dateEl);
+
+                const guestsForDay = getGuestsForDay(dayDate);
+                renderGuests(dayEl, guestsForDay);
+
+                const countEl = document.createElement('div');
+                countEl.className = 'guest-count';
+                countEl.textContent = `Total: ${guestsForDay.length}`;
+                dayEl.appendChild(countEl);
+
+                calendarEl.appendChild(dayEl);
+            }
+
+            containerEl.appendChild(calendarEl);
         }
 
         function getGuestsForDay(date) {
@@ -211,14 +228,14 @@
             });
         }
 
-        document.getElementById('bookStayBtn').addEventListener('click', function() {
-            document.getElementById('bookForm').style.display = 'block';
-            document.getElementById('updateForm').style.display = 'none';
+        document.getElementById('prevMonth').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
         });
 
-        document.getElementById('updateStayBtn').addEventListener('click', function() {
-            document.getElementById('updateForm').style.display = 'block';
-            document.getElementById('bookForm').style.display = 'none';
+        document.getElementById('nextMonth').addEventListener('click', function() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
         });
 
         function getRandomColor() {
@@ -236,12 +253,12 @@
             const endDate = document.getElementById('bookEndDate').value;
 
             if (!name || !startDate || !endDate) {
-                alert('Please fill in all fields');
+                alert('Por favor, completa todos los campos');
                 return;
             }
 
             if (bookings.some(booking => booking.name.toLowerCase() === name.toLowerCase())) {
-                alert('A guest with this name already exists. Please use a different name.');
+                alert('Ya existe un huésped con este nombre. Por favor, usa un nombre diferente.');
                 return;
             }
 
@@ -253,8 +270,7 @@
             };
 
             bookings.push(newBooking);
-            renderCalendars();
-            document.getElementById('bookForm').style.display = 'none';
+            renderCalendar();
             document.getElementById('newGuestName').value = '';
             document.getElementById('bookStartDate').value = '';
             document.getElementById('bookEndDate').value = '';
@@ -266,27 +282,26 @@
             const newEndDate = document.getElementById('newEndDate').value;
 
             if (!name || !newStartDate || !newEndDate) {
-                alert('Please fill in all fields');
+                alert('Por favor, completa todos los campos');
                 return;
             }
 
             const existingBooking = bookings.find(booking => booking.name.toLowerCase() === name.toLowerCase());
             if (!existingBooking) {
-                alert('Guest not found');
+                alert('Huésped no encontrado');
                 return;
             }
 
             existingBooking.startDate = newStartDate;
             existingBooking.endDate = newEndDate;
 
-            renderCalendars();
-            document.getElementById('updateForm').style.display = 'none';
+            renderCalendar();
             document.getElementById('guestName').value = '';
             document.getElementById('newStartDate').value = '';
             document.getElementById('newEndDate').value = '';
         }
 
-        renderCalendars();
+        renderCalendar();
     </script>
 </body>
 </html>
