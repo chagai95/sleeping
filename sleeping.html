@@ -11,6 +11,33 @@
             padding: 20px;
             background-color: #f0f0f0;
         }
+        .welcome-message {
+            background-color: #4a90e2;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .controls {
+            margin-bottom: 20px;
+        }
+        .button {
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-right: 10px;
+        }
+        .calendar-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
         .calendar {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -37,21 +64,16 @@
         .guest {
             font-size: 0.9em;
             margin-bottom: 2px;
+            padding: 2px 5px;
+            border-radius: 3px;
+            color: white;
         }
         .guest-count {
             font-weight: bold;
             color: #4a90e2;
             margin-top: 5px;
         }
-        #updateStayBtn {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            font-size: 1em;
-        }
-        #updateForm {
+        .form {
             display: none;
             background-color: white;
             padding: 20px;
@@ -65,9 +87,19 @@
     </style>
 </head>
 <body>
-    <div id="calendar" class="calendar"></div>
-    <button id="updateStayBtn">Update Stay</button>
-    <div id="updateForm">
+    <div class="welcome-message">¡Chagai te espera!</div>
+    <div class="controls">
+        <button id="bookStayBtn" class="button">Book Stay</button>
+        <button id="updateStayBtn" class="button">Update Stay</button>
+    </div>
+    <div id="calendarContainer" class="calendar-container"></div>
+    <div id="bookForm" class="form">
+        <input type="text" id="newGuestName" placeholder="Your Name">
+        <input type="date" id="bookStartDate">
+        <input type="date" id="bookEndDate">
+        <button onclick="bookStay()">Book Stay</button>
+    </div>
+    <div id="updateForm" class="form">
         <input type="text" id="guestName" placeholder="Your Name">
         <input type="date" id="newStartDate">
         <input type="date" id="newEndDate">
@@ -75,75 +107,158 @@
     </div>
 
     <script>
-        const bookings = [
-            { name: "Chagai", startDate: "2024-09-02", endDate: "2024-09-15" },
-            { name: "Jesse", startDate: "2024-09-02", endDate: "2024-09-08" },
-            { name: "Berni", startDate: "2024-09-02", endDate: "2024-09-22" },
-            { name: "Daniel Ramos", startDate: "2024-09-02", endDate: "2024-09-08" },
-            { name: "Nancy", startDate: "2024-09-02", endDate: "2024-09-06" },
-            { name: "Casper", startDate: "2024-09-02", endDate: "2024-09-08" },
-            { name: "Jacqueline", startDate: "2024-09-02", endDate: "2024-09-15" },
-            { name: "Emiliano", startDate: "2024-09-02", endDate: "2024-09-06" },
-            { name: "Aldo", startDate: "2024-09-02", endDate: "2024-09-06" },
-            { name: "Wei Wei", startDate: "2024-09-02", endDate: "2024-09-02" },
-            { name: "Sandor", startDate: "2024-09-03", endDate: "2024-09-06" },
-            { name: "Jessie Alvarado", startDate: "2024-09-05", endDate: "2024-09-07" },
-            { name: "Austin", startDate: "2024-09-10", endDate: "2024-09-15" },
-            { name: "Mahdi", startDate: "2024-09-17", endDate: "2024-09-17" },
-            { name: "Josi", startDate: "2024-09-15", endDate: "2024-09-15" },
-            { name: "Paxi", startDate: "2024-09-15", endDate: "2024-09-15" }
+        let bookings = [
+            { name: "Chagai", startDate: "2024-09-02", endDate: "2024-09-15", color: "#FF5733" },
+            { name: "Jesse", startDate: "2024-09-02", endDate: "2024-09-08", color: "#33FF57" },
+            { name: "Berni", startDate: "2024-09-02", endDate: "2024-09-22", color: "#3357FF" },
+            { name: "Daniel Ramos", startDate: "2024-09-02", endDate: "2024-09-08", color: "#FF33F1" },
+            { name: "Nancy", startDate: "2024-09-02", endDate: "2024-09-06", color: "#33FFF1" },
+            { name: "Casper", startDate: "2024-09-02", endDate: "2024-09-08", color: "#F1FF33" },
+            { name: "Jacqueline", startDate: "2024-09-02", endDate: "2024-09-15", color: "#FF3333" },
+            { name: "Emiliano", startDate: "2024-09-02", endDate: "2024-09-06", color: "#33FFAA" },
+            { name: "Aldo", startDate: "2024-09-02", endDate: "2024-09-06", color: "#AA33FF" },
+            { name: "Wei Wei", startDate: "2024-09-02", endDate: "2024-09-02", color: "#FFAA33" },
+            { name: "Sandor", startDate: "2024-09-03", endDate: "2024-09-06", color: "#33AAFF" },
+            { name: "Jessie Alvarado", startDate: "2024-09-05", endDate: "2024-09-07", color: "#FF3380" },
+            { name: "Austin", startDate: "2024-09-10", endDate: "2024-09-15", color: "#80FF33" },
+            { name: "Mahdi", startDate: "2024-09-17", endDate: "2024-09-17", color: "#3380FF" },
+            { name: "Josi", startDate: "2024-09-15", endDate: "2024-09-15", color: "#FF8033" },
+            { name: "Paxi", startDate: "2024-09-15", endDate: "2024-09-15", color: "#33FF80" }
         ];
 
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
-        function renderCalendar() {
-            const calendarEl = document.getElementById('calendar');
-            calendarEl.innerHTML = '';
+        function renderCalendars() {
+            const containerEl = document.getElementById('calendarContainer');
+            containerEl.innerHTML = '';
 
-            const startDate = new Date('2024-09-02');
-            const endDate = new Date('2024-09-22');
+            const startDate = new Date('2024-09-01');
+            for (let i = 0; i < 3; i++) {
+                const monthStart = new Date(startDate.getFullYear(), startDate.getMonth() + i, 1);
+                const monthEnd = new Date(startDate.getFullYear(), startDate.getMonth() + i + 1, 0);
+                
+                const calendarEl = document.createElement('div');
+                calendarEl.className = 'calendar';
+                
+                // Month header
+                const monthHeader = document.createElement('div');
+                monthHeader.className = 'calendar-header';
+                monthHeader.style.gridColumn = '1 / span 7';
+                monthHeader.textContent = monthStart.toLocaleString('default', { month: 'long', year: 'numeric' });
+                calendarEl.appendChild(monthHeader);
 
-            // Add header
-            days.forEach(day => {
-                const headerEl = document.createElement('div');
-                headerEl.className = 'calendar-header';
-                headerEl.textContent = day;
-                calendarEl.appendChild(headerEl);
-            });
-
-            // Add days
-            for (let d = new Date(startDate); d <= endDate; d.setDate(d.getDate() + 1)) {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'calendar-day';
-
-                const dateEl = document.createElement('div');
-                dateEl.className = 'date';
-                dateEl.textContent = `${d.getDate().toString().padStart(2, '0')}/${(d.getMonth() + 1).toString().padStart(2, '0')}/${d.getFullYear()}`;
-                dayEl.appendChild(dateEl);
-
-                const guestsForDay = bookings.filter(booking => 
-                    new Date(booking.startDate) <= d && new Date(booking.endDate) >= d
-                );
-
-                guestsForDay.forEach(guest => {
-                    const guestEl = document.createElement('div');
-                    guestEl.className = 'guest';
-                    guestEl.textContent = guest.name;
-                    dayEl.appendChild(guestEl);
+                // Day headers
+                days.forEach(day => {
+                    const headerEl = document.createElement('div');
+                    headerEl.className = 'calendar-header';
+                    headerEl.textContent = day;
+                    calendarEl.appendChild(headerEl);
                 });
 
-                const countEl = document.createElement('div');
-                countEl.className = 'guest-count';
-                countEl.textContent = `Total: ${guestsForDay.length}`;
-                dayEl.appendChild(countEl);
+                // Fill in empty days at the start
+                for (let d = 0; d < monthStart.getDay(); d++) {
+                    calendarEl.appendChild(document.createElement('div'));
+                }
 
-                calendarEl.appendChild(dayEl);
+                // Add days
+                for (let d = 1; d <= monthEnd.getDate(); d++) {
+                    const currentDate = new Date(monthStart.getFullYear(), monthStart.getMonth(), d);
+                    const dayEl = document.createElement('div');
+                    dayEl.className = 'calendar-day';
+
+                    const dateEl = document.createElement('div');
+                    dateEl.className = 'date';
+                    dateEl.textContent = `${d.toString().padStart(2, '0')}/${(monthStart.getMonth() + 1).toString().padStart(2, '0')}`;
+                    dayEl.appendChild(dateEl);
+
+                    const guestsForDay = getGuestsForDay(currentDate);
+                    renderGuests(dayEl, guestsForDay);
+
+                    const countEl = document.createElement('div');
+                    countEl.className = 'guest-count';
+                    countEl.textContent = `Total: ${guestsForDay.length}`;
+                    dayEl.appendChild(countEl);
+
+                    calendarEl.appendChild(dayEl);
+                }
+
+                containerEl.appendChild(calendarEl);
             }
         }
 
+        function getGuestsForDay(date) {
+            return bookings.filter(booking => 
+                new Date(booking.startDate) <= date && new Date(booking.endDate) >= date
+            );
+        }
+
+        function renderGuests(dayEl, guests) {
+            const guestMap = new Map();
+            guests.forEach(guest => {
+                if (!guestMap.has(guest.name)) {
+                    guestMap.set(guest.name, { ...guest, count: 1 });
+                } else {
+                    guestMap.get(guest.name).count++;
+                }
+            });
+
+            guestMap.forEach((guest, name) => {
+                const guestEl = document.createElement('div');
+                guestEl.className = 'guest';
+                guestEl.textContent = `${name}${guest.count > 1 ? ` (${guest.count})` : ''}`;
+                guestEl.style.backgroundColor = guest.color;
+                dayEl.appendChild(guestEl);
+            });
+        }
+
+        document.getElementById('bookStayBtn').addEventListener('click', function() {
+            document.getElementById('bookForm').style.display = 'block';
+            document.getElementById('updateForm').style.display = 'none';
+        });
+
         document.getElementById('updateStayBtn').addEventListener('click', function() {
             document.getElementById('updateForm').style.display = 'block';
+            document.getElementById('bookForm').style.display = 'none';
         });
+
+        function getRandomColor() {
+            const letters = '0123456789ABCDEF';
+            let color = '#';
+            for (let i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+        function bookStay() {
+            const name = document.getElementById('newGuestName').value;
+            const startDate = document.getElementById('bookStartDate').value;
+            const endDate = document.getElementById('bookEndDate').value;
+
+            if (!name || !startDate || !endDate) {
+                alert('Please fill in all fields');
+                return;
+            }
+
+            if (bookings.some(booking => booking.name.toLowerCase() === name.toLowerCase())) {
+                alert('A guest with this name already exists. Please use a different name.');
+                return;
+            }
+
+            const newBooking = {
+                name: name,
+                startDate: startDate,
+                endDate: endDate,
+                color: getRandomColor()
+            };
+
+            bookings.push(newBooking);
+            renderCalendars();
+            document.getElementById('bookForm').style.display = 'none';
+            document.getElementById('newGuestName').value = '';
+            document.getElementById('bookStartDate').value = '';
+            document.getElementById('bookEndDate').value = '';
+        }
 
         function updateStay() {
             const name = document.getElementById('guestName').value;
@@ -164,14 +279,14 @@
             existingBooking.startDate = newStartDate;
             existingBooking.endDate = newEndDate;
 
-            renderCalendar();
+            renderCalendars();
             document.getElementById('updateForm').style.display = 'none';
             document.getElementById('guestName').value = '';
             document.getElementById('newStartDate').value = '';
             document.getElementById('newEndDate').value = '';
         }
 
-        renderCalendar();
+        renderCalendars();
     </script>
 </body>
 </html>
