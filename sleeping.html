@@ -124,7 +124,7 @@
             <input type="text" id="newGuestName" placeholder="Your Name">
             <input type="date" id="bookStartDate">
             <input type="date" id="bookEndDate">
-            <button onclick="bookStay()" class="button">Book Stay</button>
+            <button id="bookStayBtn" class="button">Book Stay</button>
         </div>
     </div>
     <div class="controls">
@@ -139,31 +139,13 @@
             <input type="text" id="guestName" placeholder="Your Name">
             <input type="date" id="newStartDate">
             <input type="date" id="newEndDate">
-            <button onclick="updateStay()" class="button">Update Stay</button>
+            <button id="updateStayBtn" class="button">Update Stay</button>
         </div>
     </div>
 
-    <script>
-        let bookings = [
-            { name: "Chagai", startDate: "2024-09-02", endDate: "2024-09-15", color: "#FF5733" },
-            { name: "Jesse", startDate: "2024-09-02", endDate: "2024-09-08", color: "#33FF57" },
-            { name: "Berni", startDate: "2024-09-02", endDate: "2024-09-22", color: "#3357FF" },
-            { name: "Daniel Ramos", startDate: "2024-09-02", endDate: "2024-09-08", color: "#FF33F1" },
-            { name: "Nancy", startDate: "2024-09-02", endDate: "2024-09-06", color: "#33FFF1" },
-            { name: "Casper", startDate: "2024-09-02", endDate: "2024-09-08", color: "#F1FF33" },
-            { name: "Jacqueline", startDate: "2024-09-02", endDate: "2024-09-15", color: "#FF3333" },
-            { name: "Emiliano", startDate: "2024-09-02", endDate: "2024-09-06", color: "#33FFAA" },
-            { name: "Aldo", startDate: "2024-09-02", endDate: "2024-09-06", color: "#AA33FF" },
-            { name: "Wei Wei", startDate: "2024-09-02", endDate: "2024-09-02", color: "#FFAA33" },
-            { name: "Sandor", startDate: "2024-09-03", endDate: "2024-09-06", color: "#33AAFF" },
-            { name: "Jessie Alvarado", startDate: "2024-09-05", endDate: "2024-09-07", color: "#FF3380" },
-            { name: "Austin", startDate: "2024-09-10", endDate: "2024-09-15", color: "#80FF33" },
-            { name: "Mahdi", startDate: "2024-09-17", endDate: "2024-09-17", color: "#3380FF" },
-            { name: "Josi", startDate: "2024-09-15", endDate: "2024-09-15", color: "#FF8033" },
-            { name: "Paxi", startDate: "2024-09-15", endDate: "2024-09-15", color: "#33FF80" }
-        ];
+    <script type="module">
+        import { bookings, days, getGuestsForDay, bookStay, updateStay } from './booking-system.js';
 
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
         let currentDate = new Date('2024-09-01');
 
         function renderCalendars() {
@@ -224,12 +206,6 @@
             document.getElementById('currentMonthYear').textContent = `${currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' })} - ${new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' })}`;
         }
 
-        function getGuestsForDay(date) {
-            return bookings.filter(booking => 
-                new Date(booking.startDate) <= date && new Date(booking.endDate) >= date
-            );
-        }
-
         function renderGuests(dayEl, guests) {
             const guestMap = new Map();
             guests.forEach(guest => {
@@ -259,68 +235,37 @@
             renderCalendars();
         });
 
-        function getRandomColor() {
-            const letters = '0123456789ABCDEF';
-            let color = '#';
-            for (let i = 0; i < 6; i++) {
-                color += letters[Math.floor(Math.random() * 16)];
-            }
-            return color;
-        }
-
-        function bookStay() {
+        document.getElementById('bookStayBtn').addEventListener('click', function() {
             const name = document.getElementById('newGuestName').value;
             const startDate = document.getElementById('bookStartDate').value;
             const endDate = document.getElementById('bookEndDate').value;
 
-            if (!name || !startDate || !endDate) {
-                alert('Please fill in all fields');
-                return;
+            try {
+                bookStay(name, startDate, endDate);
+                renderCalendars();
+                document.getElementById('newGuestName').value = '';
+                document.getElementById('bookStartDate').value = '';
+                document.getElementById('bookEndDate').value = '';
+            } catch (error) {
+                alert(error.message);
             }
+        });
 
-            if (bookings.some(booking => booking.name.toLowerCase() === name.toLowerCase())) {
-                alert('A guest with this name already exists. Please use a different name.');
-                return;
-            }
-
-            const newBooking = {
-                name: name,
-                startDate: startDate,
-                endDate: endDate,
-                color: getRandomColor()
-            };
-
-            bookings.push(newBooking);
-            renderCalendars();
-            document.getElementById('newGuestName').value = '';
-            document.getElementById('bookStartDate').value = '';
-            document.getElementById('bookEndDate').value = '';
-        }
-
-        function updateStay() {
+        document.getElementById('updateStayBtn').addEventListener('click', function() {
             const name = document.getElementById('guestName').value;
             const newStartDate = document.getElementById('newStartDate').value;
             const newEndDate = document.getElementById('newEndDate').value;
 
-            if (!name || !newStartDate || !newEndDate) {
-                alert('Please fill in all fields');
-                return;
+            try {
+                updateStay(name, newStartDate, newEndDate);
+                renderCalendars();
+                document.getElementById('guestName').value = '';
+                document.getElementById('newStartDate').value = '';
+                document.getElementById('newEndDate').value = '';
+            } catch (error) {
+                alert(error.message);
             }
-
-            const existingBooking = bookings.find(booking => booking.name.toLowerCase() === name.toLowerCase());
-            if (!existingBooking) {
-                alert('Guest not found');
-                return;
-            }
-
-            existingBooking.startDate = newStartDate;
-            existingBooking.endDate = newEndDate;
-
-            renderCalendars();
-            document.getElementById('guestName').value = '';
-            document.getElementById('newStartDate').value = '';
-            document.getElementById('newEndDate').value = '';
-        }
+        });
 
         renderCalendars();
     </script>
