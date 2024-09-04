@@ -122,15 +122,18 @@
         }
         #bookingForm {
             display: flex;
-            flex-wrap: wrap;
+            flex-direction: column;
             gap: 10px;
         }
-        #bookingForm input {
+        #bookingForm .date-inputs {
+            display: flex;
+            gap: 10px;
+        }
+        #bookingForm .date-inputs input {
             flex: 1;
-            min-width: 120px;
         }
         #bookingForm button {
-            flex-basis: 100%;
+            width: 100%;
         }
     </style>
 </head>
@@ -142,8 +145,10 @@
             <h2>Book Your Stay</h2>
             <form id="bookingForm">
                 <input type="text" id="newGuestName" placeholder="Your Name">
-                <input type="date" id="bookStartDate">
-                <input type="date" id="bookEndDate">
+                <div class="date-inputs">
+                    <input type="date" id="bookStartDate">
+                    <input type="date" id="bookEndDate">
+                </div>
                 <button type="button" id="bookStayBtn" class="button">Book Stay</button>
             </form>
         </div>
