@@ -61,28 +61,38 @@
             font-weight: bold;
             border-radius: 5px 5px 0 0;
         }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+            margin-top: 10px;
+        }
         .calendar-day {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 10px;
-            margin-bottom: 10px;
-            border-radius: 5px;
+            padding: 5px;
+            min-height: 40px;
+            font-size: 0.8em;
+            position: relative;
         }
         .date {
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 2px;
         }
         .guest {
-            font-size: 0.8em;
-            margin-bottom: 2px;
-            padding: 2px 5px;
-            border-radius: 3px;
+            font-size: 0.7em;
+            margin-bottom: 1px;
+            padding: 1px 3px;
+            border-radius: 2px;
             color: white;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         .guest-count {
             font-weight: bold;
             color: #4a90e2;
-            margin-top: 5px;
+            font-size: 0.7em;
         }
         .form-container {
             background-color: white;
@@ -107,14 +117,25 @@
             font-size: 1.2em;
         }
         .view-details-btn {
+            position: absolute;
+            bottom: 2px;
+            right: 2px;
             background-color: #4a90e2;
             color: white;
             border: none;
-            padding: 5px 10px;
+            padding: 2px 4px;
             cursor: pointer;
-            font-size: 0.8em;
-            border-radius: 3px;
-            margin-top: 5px;
+            font-size: 0.7em;
+            border-radius: 2px;
+        }
+        .day-of-week {
+            text-align: center;
+            font-weight: bold;
+            padding: 5px;
+            background-color: #e6e6e6;
+        }
+        .other-month {
+            opacity: 0.5;
         }
     </style>
 </head>
@@ -163,56 +184,146 @@
             const viewSelect = document.getElementById('viewSelect');
             currentView = viewSelect.value;
 
-            let endDate;
+            const headerEl = document.createElement('div');
+            headerEl.className = 'calendar-header';
+            containerEl.appendChild(headerEl);
+
+            const gridEl = document.createElement('div');
+            gridEl.className = 'calendar-grid';
+            containerEl.appendChild(gridEl);
+
             switch (currentView) {
                 case 'day':
-                    endDate = new Date(currentDate);
+                    renderDayView(headerEl, gridEl);
                     break;
                 case '3day':
-                    endDate = new Date(currentDate);
-                    endDate.setDate(endDate.getDate() + 2);
+                    render3DayView(headerEl, gridEl);
                     break;
                 case 'week':
-                    endDate = new Date(currentDate);
-                    endDate.setDate(endDate.getDate() + 6);
+                    renderWeekView(headerEl, gridEl);
                     break;
                 case 'month':
-                    endDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+                    renderMonthView(headerEl, gridEl);
                     break;
             }
+        }
 
-            for (let date = new Date(currentDate); date <= endDate; date.setDate(date.getDate() + 1)) {
-                const dayEl = document.createElement('div');
-                dayEl.className = 'calendar-day';
+        function renderDayView(headerEl, gridEl) {
+            headerEl.textContent = currentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const dayEl = createDayElement(currentDate);
+            gridEl.appendChild(dayEl);
+        }
 
-                const dateEl = document.createElement('div');
-                dateEl.className = 'date';
-                dateEl.textContent = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-                dayEl.appendChild(dateEl);
+        function render3DayView(headerEl, gridEl) {
+            const startDate = new Date(currentDate);
+            startDate.setDate(startDate.getDate() - startDate.getDay());
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 2);
 
-                const guestsForDay = getGuestsForDay(date);
+            headerEl.textContent = `${startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
 
-                if (currentView === 'day' || (currentView === '3day' && window.innerWidth > 400)) {
-                    renderGuests(dayEl, guestsForDay);
-                } else {
-                    const countEl = document.createElement('div');
-                    countEl.className = 'guest-count';
-                    countEl.textContent = `Total guests: ${guestsForDay.length}`;
-                    dayEl.appendChild(countEl);
+            days.slice(0, 3).forEach(day => {
+                const dayOfWeekEl = document.createElement('div');
+                dayOfWeekEl.className = 'day-of-week';
+                dayOfWeekEl.textContent = day;
+                gridEl.appendChild(dayOfWeekEl);
+            });
 
-                    const detailsBtn = document.createElement('button');
-                    detailsBtn.className = 'view-details-btn';
-                    detailsBtn.textContent = 'View Details';
-                    detailsBtn.addEventListener('click', () => {
-                        currentDate = new Date(date);
-                        document.getElementById('viewSelect').value = 'day';
-                        renderCalendar();
-                    });
-                    dayEl.appendChild(detailsBtn);
-                }
-
-                containerEl.appendChild(dayEl);
+            for (let i = 0; i < 3; i++) {
+                const date = new Date(startDate);
+                date.setDate(date.getDate() + i);
+                const dayEl = createDayElement(date);
+                gridEl.appendChild(dayEl);
             }
+        }
+
+        function renderWeekView(headerEl, gridEl) {
+            const startDate = new Date(currentDate);
+            startDate.setDate(startDate.getDate() - startDate.getDay());
+            const endDate = new Date(startDate);
+            endDate.setDate(endDate.getDate() + 6);
+
+            headerEl.textContent = `${startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
+
+            days.forEach(day => {
+                const dayOfWeekEl = document.createElement('div');
+                dayOfWeekEl.className = 'day-of-week';
+                dayOfWeekEl.textContent = day;
+                gridEl.appendChild(dayOfWeekEl);
+            });
+
+            for (let i = 0; i < 7; i++) {
+                const date = new Date(startDate);
+                date.setDate(date.getDate() + i);
+                const dayEl = createDayElement(date);
+                gridEl.appendChild(dayEl);
+            }
+        }
+
+        function renderMonthView(headerEl, gridEl) {
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+
+            headerEl.textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+            days.forEach(day => {
+                const dayOfWeekEl = document.createElement('div');
+                dayOfWeekEl.className = 'day-of-week';
+                dayOfWeekEl.textContent = day;
+                gridEl.appendChild(dayOfWeekEl);
+            });
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                const emptyEl = document.createElement('div');
+                emptyEl.className = 'calendar-day other-month';
+                gridEl.appendChild(emptyEl);
+            }
+
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+                const dayEl = createDayElement(date);
+                gridEl.appendChild(dayEl);
+            }
+
+            const remainingDays = 7 - ((firstDay.getDay() + lastDay.getDate()) % 7);
+            for (let i = 0; i < remainingDays; i++) {
+                const emptyEl = document.createElement('div');
+                emptyEl.className = 'calendar-day other-month';
+                gridEl.appendChild(emptyEl);
+            }
+        }
+
+        function createDayElement(date) {
+            const dayEl = document.createElement('div');
+            dayEl.className = 'calendar-day';
+
+            const dateEl = document.createElement('div');
+            dateEl.className = 'date';
+            dateEl.textContent = date.getDate();
+            dayEl.appendChild(dateEl);
+
+            const guestsForDay = getGuestsForDay(date);
+
+            if (currentView === 'day' || currentView === '3day') {
+                renderGuests(dayEl, guestsForDay);
+            } else {
+                const countEl = document.createElement('div');
+                countEl.className = 'guest-count';
+                countEl.textContent = `Total: ${guestsForDay.length}`;
+                dayEl.appendChild(countEl);
+
+                const detailsBtn = document.createElement('button');
+                detailsBtn.className = 'view-details-btn';
+                detailsBtn.textContent = 'Details';
+                detailsBtn.addEventListener('click', () => {
+                    currentDate = new Date(date);
+                    document.getElementById('viewSelect').value = 'day';
+                    renderCalendar();
+                });
+                dayEl.appendChild(detailsBtn);
+            }
+
+            return dayEl;
         }
 
         function renderGuests(dayEl, guests) {
@@ -280,27 +391,4 @@
                 document.getElementById('bookStartDate').value = '';
                 document.getElementById('bookEndDate').value = '';
             } catch (error) {
-                alert(error.message);
-            }
-        });
-
-        document.getElementById('updateStayBtn').addEventListener('click', function() {
-            const name = document.getElementById('guestName').value;
-            const newStartDate = document.getElementById('newStartDate').value;
-            const newEndDate = document.getElementById('newEndDate').value;
-
-            try {
-                updateStay(name, newStartDate, newEndDate);
-                renderCalendar();
-                document.getElementById('guestName').value = '';
-                document.getElementById('newStartDate').value = '';
-                document.getElementById('newEndDate').value = '';
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-
-        renderCalendar();
-    </script>
-</body>
-</html>
+                alert
