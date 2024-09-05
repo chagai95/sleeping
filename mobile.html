@@ -4,34 +4,33 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobile Booking Calendar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif;
             margin: 0;
-            padding: 10px;
+            padding: 0;
             background-color: #f0f0f0;
         }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
         .welcome-message {
-            background-color: #ff6b6b;
-            color: #ffffff;
+            background-color: #000000;
+            color: #ffff00;
             padding: 20px;
             text-align: center;
             font-size: 24px;
+            font-weight: bold;
             margin-bottom: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            font-family: 'Rubik Doodle Shadow', cursive;
             text-transform: uppercase;
         }
         .welcome-message span {
-            display: inline-block;
-            animation: pulse 2s infinite;
-        }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+            color: #ff0000;
         }
         .controls {
             display: flex;
@@ -43,15 +42,15 @@
             background-color: #4a90e2;
             color: white;
             border: none;
-            padding: 10px;
+            padding: 10px 15px;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 16px;
             border-radius: 5px;
         }
         .calendar-container {
             background-color: white;
             border-radius: 10px;
-            padding: 10px;
+            padding: 20px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
         }
@@ -62,30 +61,31 @@
             text-align: center;
             font-weight: bold;
             border-radius: 5px 5px 0 0;
+            font-size: 18px;
         }
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
+            gap: 5px;
             margin-top: 10px;
         }
         .calendar-day {
             background-color: #f9f9f9;
             border: 1px solid #ddd;
-            padding: 5px;
-            min-height: 40px;
-            font-size: 0.8em;
+            padding: 10px;
+            min-height: 60px;
+            font-size: 14px;
             position: relative;
         }
         .date {
             font-weight: bold;
-            margin-bottom: 2px;
+            margin-bottom: 5px;
         }
         .guest {
-            font-size: 0.7em;
-            margin-bottom: 1px;
-            padding: 1px 3px;
-            border-radius: 2px;
+            font-size: 12px;
+            margin-bottom: 2px;
+            padding: 2px 4px;
+            border-radius: 3px;
             color: white;
             white-space: nowrap;
             overflow: hidden;
@@ -94,11 +94,14 @@
         .guest-count {
             font-weight: bold;
             color: #4a90e2;
-            font-size: 0.7em;
+            font-size: 12px;
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
         }
         .form-container {
             background-color: white;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             margin-bottom: 20px;
@@ -106,35 +109,25 @@
         .form {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 15px;
         }
-        input, select, button {
+        input, select {
             padding: 10px;
-            box-sizing: border-box;
-            width: 100%;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         h2 {
             color: #4a90e2;
             margin-top: 0;
-            font-size: 1.2em;
-        }
-        .view-details-btn {
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 2px 4px;
-            cursor: pointer;
-            font-size: 0.7em;
-            border-radius: 2px;
+            font-size: 20px;
         }
         .day-of-week {
             text-align: center;
             font-weight: bold;
-            padding: 5px;
+            padding: 10px;
             background-color: #e6e6e6;
+            font-size: 14px;
         }
         .other-month {
             opacity: 0.5;
@@ -142,34 +135,35 @@
     </style>
 </head>
 <body>
-    <div class="welcome-message"><span>STAY IN BERN</span></div>
-    <div class="form-container">
-        <h2>Book a Stay</h2>
-        <div class="form">
-            <input type="text" id="newGuestName" placeholder="Your Name">
-            <input type="date" id="bookStartDate">
-            <input type="date" id="bookEndDate">
-            <button id="bookStayBtn" class="button">Book Stay</button>
+    <div class="container">
+        <div class="welcome-message">STAY IN <span>BERN</span></div>
+        <div class="form-container">
+            <h2>Book a Stay</h2>
+            <div class="form">
+                <input type="text" id="newGuestName" placeholder="Your Name">
+                <input type="date" id="bookStartDate">
+                <input type="date" id="bookEndDate">
+                <button id="bookStayBtn" class="button">Book Stay</button>
+            </div>
         </div>
-    </div>
-    <div class="controls">
-        <button id="prevBtn" class="button">&lt; Prev</button>
-        <select id="viewSelect">
-            <option value="day">Day</option>
-            <option value="3day">3 Days</option>
-            <option value="week">Week</option>
-            <option value="month" selected>Month</option>
-        </select>
-        <button id="nextBtn" class="button">Next &gt;</button>
-    </div>
-    <div id="calendarContainer" class="calendar-container"></div>
-    <div class="form-container">
-        <h2>Update Stay</h2>
-        <div class="form">
-            <input type="text" id="guestName" placeholder="Your Name">
-            <input type="date" id="newStartDate">
-            <input type="date" id="newEndDate">
-            <button id="updateStayBtn" class="button">Update Stay</button>
+        <div class="controls">
+            <button id="prevBtn" class="button">&lt; Previous</button>
+            <select id="viewSelect">
+                <option value="month" selected>Month</option>
+                <option value="week">Week</option>
+                <option value="day">Day</option>
+            </select>
+            <button id="nextBtn" class="button">Next &gt;</button>
+        </div>
+        <div id="calendarContainer" class="calendar-container"></div>
+        <div class="form-container">
+            <h2>Update Stay</h2>
+            <div class="form">
+                <input type="text" id="guestName" placeholder="Your Name">
+                <input type="date" id="newStartDate">
+                <input type="date" id="newEndDate">
+                <button id="updateStayBtn" class="button">Update Stay</button>
+            </div>
         </div>
     </div>
 
@@ -198,9 +192,6 @@
                 case 'day':
                     renderDayView(headerEl, gridEl);
                     break;
-                case '3day':
-                    render3DayView(headerEl, gridEl);
-                    break;
                 case 'week':
                     renderWeekView(headerEl, gridEl);
                     break;
@@ -214,29 +205,6 @@
             headerEl.textContent = currentDate.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
             const dayEl = createDayElement(currentDate);
             gridEl.appendChild(dayEl);
-        }
-
-        function render3DayView(headerEl, gridEl) {
-            const startDate = new Date(currentDate);
-            startDate.setDate(startDate.getDate() - startDate.getDay());
-            const endDate = new Date(startDate);
-            endDate.setDate(endDate.getDate() + 2);
-
-            headerEl.textContent = `${startDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric' })} - ${endDate.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}`;
-
-            days.slice(0, 3).forEach(day => {
-                const dayOfWeekEl = document.createElement('div');
-                dayOfWeekEl.className = 'day-of-week';
-                dayOfWeekEl.textContent = day;
-                gridEl.appendChild(dayOfWeekEl);
-            });
-
-            for (let i = 0; i < 3; i++) {
-                const date = new Date(startDate);
-                date.setDate(date.getDate() + i);
-                const dayEl = createDayElement(date);
-                gridEl.appendChild(dayEl);
-            }
         }
 
         function renderWeekView(headerEl, gridEl) {
@@ -271,7 +239,7 @@
             days.forEach(day => {
                 const dayOfWeekEl = document.createElement('div');
                 dayOfWeekEl.className = 'day-of-week';
-                dayOfWeekEl.textContent = day;
+                dayOfWeekEl.textContent = day.slice(0, 3);
                 gridEl.appendChild(dayOfWeekEl);
             });
 
@@ -308,30 +276,7 @@
 
             const guestsForDay = getGuestsForDay(date);
 
-            if (currentView === 'day' || currentView === '3day') {
-                renderGuests(dayEl, guestsForDay);
-            } else {
-                const countEl = document.createElement('div');
-                countEl.className = 'guest-count';
-                countEl.textContent = `Total: ${guestsForDay.length}`;
-                dayEl.appendChild(countEl);
-
-                const detailsBtn = document.createElement('button');
-                detailsBtn.className = 'view-details-btn';
-                detailsBtn.textContent = 'Details';
-                detailsBtn.addEventListener('click', () => {
-                    currentDate = new Date(date);
-                    document.getElementById('viewSelect').value = 'day';
-                    renderCalendar();
-                });
-                dayEl.appendChild(detailsBtn);
-            }
-
-            return dayEl;
-        }
-
-        function renderGuests(dayEl, guests) {
-            guests.forEach(guest => {
+            guestsForDay.forEach(guest => {
                 const guestEl = document.createElement('div');
                 guestEl.className = 'guest';
                 guestEl.textContent = guest.name;
@@ -341,17 +286,16 @@
 
             const countEl = document.createElement('div');
             countEl.className = 'guest-count';
-            countEl.textContent = `Total: ${guests.length}`;
+            countEl.textContent = `Total: ${guestsForDay.length}`;
             dayEl.appendChild(countEl);
+
+            return dayEl;
         }
 
         document.getElementById('prevBtn').addEventListener('click', function() {
             switch (currentView) {
                 case 'day':
                     currentDate.setDate(currentDate.getDate() - 1);
-                    break;
-                case '3day':
-                    currentDate.setDate(currentDate.getDate() - 3);
                     break;
                 case 'week':
                     currentDate.setDate(currentDate.getDate() - 7);
@@ -367,9 +311,6 @@
             switch (currentView) {
                 case 'day':
                     currentDate.setDate(currentDate.getDate() + 1);
-                    break;
-                case '3day':
-                    currentDate.setDate(currentDate.getDate() + 3);
                     break;
                 case 'week':
                     currentDate.setDate(currentDate.getDate() + 7);
@@ -393,4 +334,29 @@
                 renderCalendar();
                 document.getElementById('newGuestName').value = '';
                 document.getElementById('bookStartDate').value = '';
-                document.getElementById('
+                document.getElementById('bookEndDate').value = '';
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        document.getElementById('updateStayBtn').addEventListener('click', function() {
+            const name = document.getElementById('guestName').value;
+            const newStartDate = document.getElementById('newStartDate').value;
+            const newEndDate = document.getElementById('newEndDate').value;
+
+            try {
+                updateStay(name, newStartDate, newEndDate);
+                renderCalendar();
+                document.getElementById('guestName').value = '';
+                document.getElementById('newStartDate').value = '';
+                document.getElementById('newEndDate').value = '';
+            } catch (error) {
+                alert(error.message);
+            }
+        });
+
+        renderCalendar();
+    </script>
+</body>
+</html>
