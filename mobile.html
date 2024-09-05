@@ -13,8 +13,8 @@
             background-color: #f0f0f0;
         }
         .welcome-message {
-            background-color: lavender;
-            color: white;
+            background-color: #4a90e2;
+            color: #ffffff;
             padding: 20px;
             text-align: center;
             font-size: 24px;
@@ -140,7 +140,18 @@
     </style>
 </head>
 <body>
-    <div class="welcome-message">CHAGAI IS WAITING FOR YOU!</div>
+    <div class="welcome-message">STAY IN BERN</div>
+    <div class="controls">
+        <button id="prevBtn" class="button">&lt; Prev</button>
+        <select id="viewSelect">
+            <option value="day">Day</option>
+            <option value="3day">3 Days</option>
+            <option value="week">Week</option>
+            <option value="month" selected>Month</option>
+        </select>
+        <button id="nextBtn" class="button">Next &gt;</button>
+    </div>
+    <div id="calendarContainer" class="calendar-container"></div>
     <div class="form-container">
         <h2>Book a Stay</h2>
         <div class="form">
@@ -150,17 +161,6 @@
             <button id="bookStayBtn" class="button">Book Stay</button>
         </div>
     </div>
-    <div class="controls">
-        <button id="prevBtn" class="button">&lt; Prev</button>
-        <select id="viewSelect">
-            <option value="day">Day</option>
-            <option value="3day">3 Days</option>
-            <option value="week">Week</option>
-            <option value="month">Month</option>
-        </select>
-        <button id="nextBtn" class="button">Next &gt;</button>
-    </div>
-    <div id="calendarContainer" class="calendar-container"></div>
     <div class="form-container">
         <h2>Update Stay</h2>
         <div class="form">
@@ -175,7 +175,7 @@
         import { bookings, days, getGuestsForDay, bookStay, updateStay } from './booking-system.js';
 
         let currentDate = new Date('2024-09-01');
-        let currentView = 'day';
+        let currentView = 'month';
 
         function renderCalendar() {
             const containerEl = document.getElementById('calendarContainer');
@@ -386,9 +386,4 @@
 
             try {
                 bookStay(name, startDate, endDate);
-                renderCalendar();
-                document.getElementById('newGuestName').value = '';
-                document.getElementById('bookStartDate').value = '';
-                document.getElementById('bookEndDate').value = '';
-            } catch (error) {
-                alert
+                renderCalen
