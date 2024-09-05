@@ -13,7 +13,7 @@
             background-color: #f0f0f0;
         }
         .welcome-message {
-            background-color: #4a90e2;
+            background-color: #ff6b6b;
             color: #ffffff;
             padding: 20px;
             text-align: center;
@@ -23,7 +23,9 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             font-family: 'Rubik Doodle Shadow', cursive;
             text-transform: uppercase;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        .welcome-message span {
+            display: inline-block;
             animation: pulse 2s infinite;
         }
         @keyframes pulse {
@@ -140,7 +142,16 @@
     </style>
 </head>
 <body>
-    <div class="welcome-message">STAY IN BERN</div>
+    <div class="welcome-message"><span>STAY IN BERN</span></div>
+    <div class="form-container">
+        <h2>Book a Stay</h2>
+        <div class="form">
+            <input type="text" id="newGuestName" placeholder="Your Name">
+            <input type="date" id="bookStartDate">
+            <input type="date" id="bookEndDate">
+            <button id="bookStayBtn" class="button">Book Stay</button>
+        </div>
+    </div>
     <div class="controls">
         <button id="prevBtn" class="button">&lt; Prev</button>
         <select id="viewSelect">
@@ -152,15 +163,6 @@
         <button id="nextBtn" class="button">Next &gt;</button>
     </div>
     <div id="calendarContainer" class="calendar-container"></div>
-    <div class="form-container">
-        <h2>Book a Stay</h2>
-        <div class="form">
-            <input type="text" id="newGuestName" placeholder="Your Name">
-            <input type="date" id="bookStartDate">
-            <input type="date" id="bookEndDate">
-            <button id="bookStayBtn" class="button">Book Stay</button>
-        </div>
-    </div>
     <div class="form-container">
         <h2>Update Stay</h2>
         <div class="form">
@@ -174,7 +176,7 @@
     <script type="module">
         import { bookings, days, getGuestsForDay, bookStay, updateStay } from './booking-system.js';
 
-        let currentDate = new Date('2024-09-01');
+        let currentDate = new Date();
         let currentView = 'month';
 
         function renderCalendar() {
@@ -286,10 +288,12 @@
             }
 
             const remainingDays = 7 - ((firstDay.getDay() + lastDay.getDate()) % 7);
-            for (let i = 0; i < remainingDays; i++) {
-                const emptyEl = document.createElement('div');
-                emptyEl.className = 'calendar-day other-month';
-                gridEl.appendChild(emptyEl);
+            if (remainingDays < 7) {
+                for (let i = 0; i < remainingDays; i++) {
+                    const emptyEl = document.createElement('div');
+                    emptyEl.className = 'calendar-day other-month';
+                    gridEl.appendChild(emptyEl);
+                }
             }
         }
 
@@ -386,4 +390,7 @@
 
             try {
                 bookStay(name, startDate, endDate);
-                renderCalen
+                renderCalendar();
+                document.getElementById('newGuestName').value = '';
+                document.getElementById('bookStartDate').value = '';
+                document.getElementById('
