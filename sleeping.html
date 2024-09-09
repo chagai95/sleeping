@@ -175,13 +175,14 @@
             font-size: 0.75em;
             margin-bottom: 2px;
             padding: 2px 4px;
-            border-radius: 8px;
-            color: white;
+            border-radius: 4px;
+            color: var(--guest-text-color);
             display: inline-block;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
             max-width: 100%;
+            font-weight: 600;
         }
         
         .guest-count {
@@ -338,11 +339,16 @@
         }
 
         function renderGuests(container, guests) {
-            guests.forEach(guest => {
+            const colors = [
+                '#FF9AA2', '#FFB7B2', '#FFDAC1', '#E2F0CB', '#B5EAD7',
+                '#C7CEEA', '#F2A6A6', '#F4E1D2', '#FCF5C7', '#ADF7B6'
+            ];
+            
+            guests.forEach((guest, index) => {
                 const guestEl = document.createElement('div');
                 guestEl.className = 'guest';
                 guestEl.textContent = guest.name;
-                guestEl.style.backgroundColor = guest.color;
+                guestEl.style.backgroundColor = colors[index % colors.length];
                 container.appendChild(guestEl);
             });
         }
