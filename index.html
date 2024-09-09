@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Redirecting...</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+        .message {
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="message">
+        <h1>Redirecting...</h1>
+        <p>Please wait while we direct you to the appropriate page.</p>
+    </div>
+
+    <script>
+        function isMobile() {
+            return window.innerWidth <= 768; // Commonly used breakpoint for mobile devices
+        }
+
+        function redirect() {
+            if (isMobile()) {
+                window.location.href = 'mobile.html';
+            } else {
+                window.location.href = 'sleeping.html';
+            }
+        }
+
+        // Perform redirection after a short delay to allow the message to be seen
+        setTimeout(redirect, 1500);
+    </script>
+</body>
+</html>
