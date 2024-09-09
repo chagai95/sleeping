@@ -3,143 +3,279 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Booking Calendar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik+Doodle+Shadow&display=swap" rel="stylesheet">
+    <title>Chagai Booking Calendar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --accent-color: #feca57;
+            --background-color: #f7f1e3;
+            --text-color: #2d3436;
+            --calendar-bg: #ffffff;
+            --calendar-border: #d1d1e0;
+            --day-bg: #f0f0f5;
+            --day-hover: #e6e6fa;
+            --header-bg: #6c5ce7;
+        }
+        
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 20px;
-            background-color: #f0f0f0;
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
+        
         .welcome-message {
-            background-color: lavender;
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
             color: white;
-            padding: 30px;
+            padding: 40px;
             text-align: center;
             font-size: 48px;
-            margin-bottom: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            font-family: 'Rubik Doodle Shadow', cursive;
+            margin-bottom: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            letter-spacing: 1px;
             text-transform: uppercase;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            animation: pulse 2s infinite;
+            overflow: hidden;
+            position: relative;
+            perspective: 1000px;
         }
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+
+        .welcome-message::before {
+            content: "CHAGAI IS WAITING FOR YOU!";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateZ(-100px) rotateY(0deg);
+            animation: rotate-in 8s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.8);
         }
+
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes rotate-in {
+            0%, 100% { transform: translateZ(-100px) rotateY(0deg); opacity: 0; }
+            25%, 75% { transform: translateZ(0) rotateY(360deg); opacity: 1; }
+            50% { transform: translateZ(100px) rotateY(720deg); opacity: 1; }
+        }
+
         .controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
+        
         .button {
-            background-color: #4a90e2;
+            background-color: var(--primary-color);
             color: white;
             border: none;
             padding: 10px 20px;
             cursor: pointer;
-            font-size: 1em;
-            border-radius: 5px;
-        }
-        .calendar-container {
+            font-size: 0.9em;
+            border-radius: 30px;
+            transition: all 0.3s ease;
+            font-weight: 600;
             display: flex;
-            gap: 20px;
-            margin-bottom: 20px;
+            align-items: center;
+            gap: 10px;
         }
+        
+        .button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+        }
+        
         .calendar {
-            flex: 1;
-            background-color: white;
-            border-radius: 10px;
-            padding: 20px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: var(--calendar-bg);
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 800px;
+            border: 2px solid var(--calendar-border);
+            margin: 0 auto;
         }
+        
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
             gap: 5px;
-        }
-        .calendar-header {
-            background-color: #4a90e2;
-            color: white;
-            padding: 10px;
-            text-align: center;
-            font-weight: bold;
-        }
-        .calendar-day {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 10px;
-            min-height: 80px;
-        }
-        .date {
-            font-weight: bold;
-            margin-bottom: 5px;
-        }
-        .guest {
-            font-size: 0.8em;
-            margin-bottom: 2px;
-            padding: 2px 5px;
-            border-radius: 3px;
-            color: white;
-        }
-        .guest-count {
-            font-weight: bold;
-            color: #4a90e2;
-            margin-top: 5px;
-        }
-        .form-container {
-            background-color: white;
-            padding: 20px;
+            background-color: var(--calendar-border);
+            border: 1px solid var(--calendar-border);
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
+            overflow: hidden;
         }
+        
+        .calendar-header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 8px 0;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+        
+        .calendar-day {
+            background-color: var(--day-bg);
+            padding: 5px;
+            height: 80px;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            overflow: hidden;
+            border: 1px solid var(--calendar-border);
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        
+        .calendar-day:hover {
+            transform: scale(1.05);
+            z-index: 10;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            background-color: var(--day-hover);
+            height: auto;
+            min-height: 80px;
+            overflow: visible;
+        }
+        
+        .date {
+            font-weight: 600;
+            margin-bottom: 2px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+        
+        .guests-container {
+            flex-grow: 1;
+            overflow: hidden;
+        }
+
+        .calendar-day:hover .guests-container {
+            overflow: visible;
+        }
+        
+        .guest {
+            font-size: 0.75em;
+            margin-bottom: 2px;
+            padding: 2px 4px;
+            border-radius: 8px;
+            color: white;
+            display: inline-block;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 100%;
+        }
+        
+        .guest-count {
+            font-weight: 600;
+            color: var(--secondary-color);
+            font-size: 0.8em;
+            margin-top: 2px;
+        }
+        
+        .form-container {
+            background-color: var(--calendar-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+            border: 2px solid var(--calendar-border);
+        }
+        
         .form {
             display: flex;
             gap: 10px;
+            flex-wrap: wrap;
         }
+        
         input, button {
             padding: 10px;
             box-sizing: border-box;
+            border-radius: 8px;
+            border: 1px solid var(--calendar-border);
+            font-family: 'Poppins', sans-serif;
         }
+        
         input {
             flex: 1;
+            min-width: 150px;
         }
+        
         h2 {
-            color: #4a90e2;
+            color: var(--primary-color);
             margin-top: 0;
+            margin-bottom: 15px;
+            font-weight: 600;
+            font-size: 1.2em;
+        }
+        
+        #currentMonthYear {
+            font-size: 1.3em;
+            color: var(--header-bg);
+        }
+        
+        @media (max-width: 768px) {
+            .form {
+                flex-direction: column;
+            }
+            .button {
+                width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="welcome-message">CHAGAI IS WAITING FOR YOU!</div>
+    <div class="welcome-message">
+        CHAGAI IS WAITING FOR YOU!
+    </div>
     <div class="form-container">
-        <h2>When are you staying?</h2>
+        <h2><i class="far fa-calendar-alt"></i> Plan Your Stay</h2>
         <div class="form">
             <input type="text" id="newGuestName" placeholder="Your Name">
             <input type="date" id="bookStartDate">
             <input type="date" id="bookEndDate">
-            <button id="bookStayBtn" class="button">Save</button>
+            <button id="bookStayBtn" class="button">
+                <i class="fas fa-check"></i> Book Now
+            </button>
         </div>
     </div>
     <div class="controls">
-        <button id="prevMonth" class="button">Previous Months</button>
+        <button id="prevMonth" class="button">
+            <i class="fas fa-chevron-left"></i> Previous
+        </button>
         <h2 id="currentMonthYear"></h2>
-        <button id="nextMonth" class="button">Next Months</button>
+        <button id="nextMonth" class="button">
+            Next <i class="fas fa-chevron-right"></i>
+        </button>
     </div>
-    <div id="calendarContainer" class="calendar-container"></div>
+    <div class="calendar" id="calendarContainer"></div>
     <div class="form-container">
-        <h2>Update Stay</h2>
+        <h2><i class="fas fa-edit"></i> Update Your Stay</h2>
         <div class="form">
             <input type="text" id="guestName" placeholder="Your Name">
             <input type="date" id="newStartDate">
             <input type="date" id="newEndDate">
-            <button id="updateStayBtn" class="button">Update Stay</button>
+            <button id="updateStayBtn" class="button">
+                <i class="fas fa-sync-alt"></i> Update Stay
+            </button>
         </div>
     </div>
 
@@ -152,86 +288,72 @@
             const containerEl = document.getElementById('calendarContainer');
             containerEl.innerHTML = '';
             
-            for (let i = 0; i < 2; i++) {
-                const monthDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 1);
-                const calendarEl = document.createElement('div');
-                calendarEl.className = 'calendar';
-                
-                const monthHeader = document.createElement('h2');
-                monthHeader.textContent = monthDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
-                calendarEl.appendChild(monthHeader);
-
-                const calendarGrid = document.createElement('div');
-                calendarGrid.className = 'calendar-grid';
-                
-                days.forEach(day => {
-                    const headerEl = document.createElement('div');
-                    headerEl.className = 'calendar-header';
-                    headerEl.textContent = day;
-                    calendarGrid.appendChild(headerEl);
-                });
-
-                const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
-                const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
-
-                for (let d = 0; d < monthStart.getDay(); d++) {
-                    calendarGrid.appendChild(document.createElement('div'));
-                }
-
-                for (let d = 1; d <= monthEnd.getDate(); d++) {
-                    const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), d);
-                    const dayEl = document.createElement('div');
-                    dayEl.className = 'calendar-day';
-
-                    const dateEl = document.createElement('div');
-                    dateEl.className = 'date';
-                    dateEl.textContent = d;
-                    dayEl.appendChild(dateEl);
-
-                    const guestsForDay = getGuestsForDay(dayDate);
-                    renderGuests(dayEl, guestsForDay);
-
-                    const countEl = document.createElement('div');
-                    countEl.className = 'guest-count';
-                    countEl.textContent = `Total: ${guestsForDay.length}`;
-                    dayEl.appendChild(countEl);
-
-                    calendarGrid.appendChild(dayEl);
-                }
-
-                calendarEl.appendChild(calendarGrid);
-                containerEl.appendChild(calendarEl);
-            }
-
-            document.getElementById('currentMonthYear').textContent = `${currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' })} - ${new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1).toLocaleString('en-US', { month: 'long', year: 'numeric' })}`;
-        }
-
-        function renderGuests(dayEl, guests) {
-            const guestMap = new Map();
-            guests.forEach(guest => {
-                if (!guestMap.has(guest.name)) {
-                    guestMap.set(guest.name, { ...guest, count: 1 });
-                } else {
-                    guestMap.get(guest.name).count++;
-                }
+            const monthDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            
+            const calendarGrid = document.createElement('div');
+            calendarGrid.className = 'calendar-grid';
+            
+            days.forEach(day => {
+                const headerEl = document.createElement('div');
+                headerEl.className = 'calendar-header';
+                headerEl.textContent = day.slice(0, 3);
+                calendarGrid.appendChild(headerEl);
             });
 
-            guestMap.forEach((guest, name) => {
+            const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+            const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+
+            for (let d = 0; d < monthStart.getDay(); d++) {
+                calendarGrid.appendChild(document.createElement('div'));
+            }
+
+            for (let d = 1; d <= monthEnd.getDate(); d++) {
+                const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), d);
+                const dayEl = document.createElement('div');
+                dayEl.className = 'calendar-day';
+
+                const dateEl = document.createElement('div');
+                dateEl.className = 'date';
+                dateEl.textContent = d;
+                dayEl.appendChild(dateEl);
+
+                const guestsContainer = document.createElement('div');
+                guestsContainer.className = 'guests-container';
+                dayEl.appendChild(guestsContainer);
+
+                const guestsForDay = getGuestsForDay(dayDate);
+                renderGuests(guestsContainer, guestsForDay);
+
+                const countEl = document.createElement('div');
+                countEl.className = 'guest-count';
+                countEl.textContent = `Total: ${guestsForDay.length}`;
+                dayEl.appendChild(countEl);
+
+                calendarGrid.appendChild(dayEl);
+            }
+
+            containerEl.appendChild(calendarGrid);
+
+            document.getElementById('currentMonthYear').textContent = monthDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+        }
+
+        function renderGuests(container, guests) {
+            guests.forEach(guest => {
                 const guestEl = document.createElement('div');
                 guestEl.className = 'guest';
-                guestEl.textContent = `${name}${guest.count > 1 ? ` (${guest.count})` : ''}`;
+                guestEl.textContent = guest.name;
                 guestEl.style.backgroundColor = guest.color;
-                dayEl.appendChild(guestEl);
+                container.appendChild(guestEl);
             });
         }
 
         document.getElementById('prevMonth').addEventListener('click', function() {
-            currentDate.setMonth(currentDate.getMonth() - 2);
+            currentDate.setMonth(currentDate.getMonth() - 1);
             renderCalendars();
         });
 
         document.getElementById('nextMonth').addEventListener('click', function() {
-            currentDate.setMonth(currentDate.getMonth() + 2);
+            currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendars();
         });
 
