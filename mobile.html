@@ -4,280 +4,103 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mobile Booking Calendar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-        :root {
-            --primary-color: #ff6b6b;
-            --secondary-color: #4ecdc4;
-            --accent-color: #feca57;
-            --background-color: #f7f1e3;
-            --text-color: #2d3436;
-            --calendar-bg: #ffffff;
-            --calendar-border: #d1d1e0;
-            --day-bg: #f0f0f5;
-            --day-hover: #e6e6fa;
-            --header-bg: #6c5ce7;
-        }
-        body {
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 10px;
-            background-color: var(--background-color);
-            color: var(--text-color);
-            font-size: 12px;
-        }
-        .container { max-width: 100%; margin: 0 auto; }
-        .welcome-message {
-            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
-            background-size: 400% 400%;
-            animation: gradient 15s ease infinite;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 18px;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            font-weight: 600;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-        @keyframes gradient {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-        .button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            cursor: pointer;
-            font-size: 12px;
-            border-radius: 15px;
-            transition: all 0.3s ease;
-            font-weight: 600;
-        }
-        .calendar-container {
-            background-color: var(--calendar-bg);
-            border-radius: 10px;
-            padding: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 10px;
-            border: 1px solid var(--calendar-border);
-        }
-        .calendar-header {
-            background-color: var(--header-bg);
-            color: white;
-            padding: 5px;
-            text-align: center;
-            font-weight: 600;
-            border-radius: 5px 5px 0 0;
-            font-size: 14px;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-        }
-        .calendar-day {
-            background-color: var(--day-bg);
-            border: 1px solid var(--calendar-border);
-            padding: 2px;
-            min-height: 50px;
-            font-size: 10px;
-            position: relative;
-            overflow: hidden;
-        }
-        .date {
-            font-weight: bold;
-            color: var(--primary-color);
-            font-size: 12px;
-            margin-bottom: 2px;
-        }
-        .guest {
-            font-size: 8px;
-            margin-bottom: 1px;
-            padding: 1px;
-            border-radius: 2px;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            color: var(--text-color);
-            border: 1px solid rgba(0,0,0,0.1);
-        }
-        .day-of-week {
-            text-align: center;
-            font-weight: bold;
-            padding: 2px;
-            background-color: var(--header-bg);
-            font-size: 10px;
-            color: white;
-        }
-        .form-container {
-            background-color: var(--calendar-bg);
-            padding: 10px;
-            border-radius: 10px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 10px;
-            border: 1px solid var(--calendar-border);
-        }
-        .form { display: flex; flex-direction: column; gap: 5px; }
-        input, select {
-            padding: 5px;
-            font-size: 12px;
-            border: 1px solid var(--calendar-border);
-            border-radius: 5px;
-            font-family: 'Poppins', sans-serif;
-        }
-        h2 {
-            color: var(--primary-color);
-            margin: 0 0 5px 0;
-            font-size: 14px;
-            font-weight: 600;
-        }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 10px; font-size: 16px; }
+        .container { max-width: 100%; }
+        input, button { width: 100%; padding: 10px; margin: 5px 0; font-size: 16px; }
+        .calendar { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+        .day { border: 1px solid #ccc; padding: 5px; min-height: 50px; font-size: 14px; }
+        .booking { background-color: #AED6F1; margin: 2px 0; padding: 2px; border-radius: 3px; font-size: 12px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="welcome-message">CHAGAI IS WAITING FOR YOU!</div>
-        <div class="form-container">
-            <h2><i class="far fa-calendar-alt"></i> Book Your Stay</h2>
-            <div class="form">
-                <input type="text" id="newGuestName" placeholder="Your Name">
-                <input type="date" id="bookStartDate">
-                <input type="date" id="bookEndDate">
-                <button id="bookStayBtn" class="button"><i class="fas fa-check"></i> Save</button>
-            </div>
-        </div>
-        <div class="controls">
-            <button id="prevBtn" class="button"><i class="fas fa-chevron-left"></i> Prev</button>
-            <div id="currentMonthYear"></div>
-            <button id="nextBtn" class="button">Next <i class="fas fa-chevron-right"></i></button>
-        </div>
-        <div id="calendarContainer" class="calendar-container"></div>
+        <h1>Booking Calendar</h1>
+        <input type="text" id="name" placeholder="Your Name">
+        <input type="date" id="startDate">
+        <input type="date" id="endDate">
+        <button id="bookBtn">Book Stay</button>
+        <div id="currentMonth"></div>
+        <button id="prevMonth">Previous Month</button>
+        <button id="nextMonth">Next Month</button>
+        <div id="calendar" class="calendar"></div>
     </div>
+
     <script>
         let currentDate = new Date();
         let bookings = [];
-    
+
         function loadBookings() {
-            const storedBookings = localStorage.getItem('bookings');
-            if (storedBookings) {
-                bookings = JSON.parse(storedBookings);
-            }
-            console.log('Loaded bookings:', bookings);
+            const stored = localStorage.getItem('bookings');
+            bookings = stored ? JSON.parse(stored) : [];
         }
-    
+
         function saveBookings() {
             localStorage.setItem('bookings', JSON.stringify(bookings));
-            console.log('Saved bookings:', bookings);
         }
-    
-        function bookStay(name, startDate, endDate) {
-            if (!name || !startDate || !endDate) {
-                throw new Error("All fields are required");
+
+        function bookStay() {
+            const name = document.getElementById('name').value;
+            const start = document.getElementById('startDate').value;
+            const end = document.getElementById('endDate').value;
+            if (name && start && end) {
+                bookings.push({name, startDate: start, endDate: end});
+                saveBookings();
+                renderCalendar();
+                document.getElementById('name').value = '';
+                document.getElementById('startDate').value = '';
+                document.getElementById('endDate').value = '';
+            } else {
+                alert('Please fill all fields');
             }
-            bookings.push({ name, startDate, endDate });
-            saveBookings();
         }
-    
-        function dateRange(start, end) {
-            const dates = [];
-            let currentDate = new Date(start);
-            while (currentDate <= new Date(end)) {
-                dates.push(new Date(currentDate));
-                currentDate.setDate(currentDate.getDate() + 1);
-            }
-            return dates;
-        }
-    
+
         function renderCalendar() {
-            const containerEl = document.getElementById('calendarContainer');
-            containerEl.innerHTML = '';
-            
-            const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-            const startDate = new Date(monthStart);
-            startDate.setDate(startDate.getDate() - startDate.getDay());
-            const endDate = new Date(monthEnd);
-            endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
-    
-            const dates = dateRange(startDate, endDate);
-            
-            const gridEl = document.createElement('div');
-            gridEl.style.display = 'grid';
-            gridEl.style.gridTemplateColumns = 'repeat(7, 1fr)';
-            
-            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
+            const calendarEl = document.getElementById('calendar');
+            calendarEl.innerHTML = '';
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+
+            document.getElementById('currentMonth').textContent = 
+                currentDate.toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                calendarEl.appendChild(document.createElement('div'));
+            }
+
+            for (let day = 1; day <= lastDay.getDate(); day++) {
                 const dayEl = document.createElement('div');
+                dayEl.className = 'day';
                 dayEl.textContent = day;
-                dayEl.style.textAlign = 'center';
-                dayEl.style.fontWeight = 'bold';
-                gridEl.appendChild(dayEl);
-            });
-    
-            dates.forEach(date => {
-                const dayEl = document.createElement('div');
-                dayEl.style.border = '1px solid #ccc';
-                dayEl.style.padding = '5px';
-                dayEl.style.minHeight = '80px';
-                
-                const dateEl = document.createElement('div');
-                dateEl.textContent = date.getDate();
-                dayEl.appendChild(dateEl);
-    
+
+                const currentDay = new Date(year, month, day);
                 bookings.forEach(booking => {
-                    if (date >= new Date(booking.startDate) && date <= new Date(booking.endDate)) {
+                    const start = new Date(booking.startDate);
+                    const end = new Date(booking.endDate);
+                    if (currentDay >= start && currentDay <= end) {
                         const bookingEl = document.createElement('div');
+                        bookingEl.className = 'booking';
                         bookingEl.textContent = booking.name;
-                        bookingEl.style.backgroundColor = '#AED6F1';
-                        bookingEl.style.margin = '2px 0';
-                        bookingEl.style.padding = '2px';
-                        bookingEl.style.borderRadius = '3px';
                         dayEl.appendChild(bookingEl);
                     }
                 });
-    
-                gridEl.appendChild(dayEl);
-            });
-    
-            containerEl.appendChild(gridEl);
-            document.getElementById('currentMonthYear').textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+
+                calendarEl.appendChild(dayEl);
+            }
         }
-    
-        document.getElementById('prevBtn').addEventListener('click', () => {
+
+        document.getElementById('bookBtn').addEventListener('click', bookStay);
+        document.getElementById('prevMonth').addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() - 1);
             renderCalendar();
         });
-    
-        document.getElementById('nextBtn').addEventListener('click', () => {
+        document.getElementById('nextMonth').addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendar();
         });
-    
-        document.getElementById('bookStayBtn').addEventListener('click', () => {
-            const name = document.getElementById('newGuestName').value.trim();
-            const startDate = document.getElementById('bookStartDate').value;
-            const endDate = document.getElementById('bookEndDate').value;
-            try {
-                bookStay(name, startDate, endDate);
-                renderCalendar();
-                document.getElementById('newGuestName').value = '';
-                document.getElementById('bookStartDate').value = '';
-                document.getElementById('bookEndDate').value = '';
-            } catch (error) {
-                alert(error.message);
-            }
-        });
-    
+
         window.addEventListener('DOMContentLoaded', () => {
             loadBookings();
             renderCalendar();
