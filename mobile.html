@@ -169,7 +169,7 @@
 </head>
 <body>
     <div class="container">
-        <div class="welcome-message">BERN IS WAITING FOR YOU!</div>
+        <div class="welcome-message">CHAGAI IS WAITING FOR YOU!</div>
         <div class="form-container">
             <h2><i class="far fa-calendar-alt"></i> Book Your Stay</h2>
             <div class="form">
@@ -195,18 +195,16 @@
             </div>
         </div>
     </div>
-    <script type="module">
-        import { days, bookings as initialBookings } from './booking-system.js';
-
+    <script>
+        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let currentDate = new Date();
+        let bookings = [];
 
         const colors = [
             '#AED6F1', '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D2B4DE',
             '#A3E4D7', '#F9E79F', '#D5DBDB', '#ABEBC6', '#F5CBA7',
             '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'
         ];
-
-        let bookings = [];
 
         function loadBookings() {
             const storedBookings = localStorage.getItem('bookings');
@@ -218,12 +216,7 @@
                     return value;
                 });
             } else {
-                bookings = initialBookings.map(booking => ({
-                    ...booking,
-                    startDate: new Date(booking.startDate),
-                    endDate: new Date(booking.endDate)
-                }));
-                saveBookings();
+                bookings = [];
             }
         }
 
@@ -257,9 +250,14 @@
         }
 
         function getGuestsForDay(date) {
-            return bookings.filter(booking => 
-                date >= booking.startDate && date <= booking.endDate
-            );
+            return bookings.filter(booking => {
+                const bookingStart = new Date(booking.startDate);
+                const bookingEnd = new Date(booking.endDate);
+                bookingStart.setHours(0, 0, 0, 0);
+                bookingEnd.setHours(0, 0, 0, 0);
+                date.setHours(0, 0, 0, 0);
+                return date >= bookingStart && date <= bookingEnd;
+            });
         }
 
         function renderCalendar() {
