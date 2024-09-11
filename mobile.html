@@ -1,37 +1,201 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Mobile Booking Calendar</title>
-        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
-        <style>
-            /* ... (previous styles remain unchanged) ... */
-            .welcome-message::before {
-                content: "CHAGAI IS WAITING FOR YOU!";
-                position: absolute;
-                top: 0;
-                left: 0;
-                width: 100%;
-                height: 100%;
-                background: inherit;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transform: translateZ(-100px) rotateY(0deg);
-                animation: rotate-in 8s ease-in-out infinite;
-                text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.8);
-            }
-            /* ... (rest of the styles remain unchanged) ... */
-        </style>
-    </head>
-    <body>
-        <div class="container">
-            <div class="welcome-message">CHAGAI IS WAITING FOR YOU!</div>
-            <!-- ... (rest of the HTML remains unchanged) ... -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mobile Booking Calendar</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --accent-color: #feca57;
+            --background-color: #f7f1e3;
+            --text-color: #2d3436;
+            --calendar-bg: #ffffff;
+            --calendar-border: #d1d1e0;
+            --day-bg: #f0f0f5;
+            --day-hover: #e6e6fa;
+            --header-bg: #6c5ce7;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 10px;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            font-size: 12px;
+        }
+        .container { max-width: 100%; margin: 0 auto; }
+        .welcome-message {
+            background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            font-weight: 600;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            overflow: hidden;
+            position: relative;
+        }
+        .welcome-message::before {
+            content: "CHAGAI IS WAITING FOR YOU!";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateZ(-100px) rotateY(0deg);
+            animation: rotate-in 8s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.8);
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        @keyframes rotate-in {
+            0%, 100% { transform: translateZ(-100px) rotateY(0deg); opacity: 0; }
+            25%, 75% { transform: translateZ(0) rotateY(360deg); opacity: 1; }
+            50% { transform: translateZ(100px) rotateY(720deg); opacity: 1; }
+        }
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+        .button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+            font-size: 12px;
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .calendar-container {
+            background-color: var(--calendar-bg);
+            border-radius: 10px;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            border: 1px solid var(--calendar-border);
+        }
+        .calendar-header {
+            background-color: var(--header-bg);
+            color: white;
+            padding: 5px;
+            text-align: center;
+            font-weight: 600;
+            border-radius: 5px 5px 0 0;
+            font-size: 14px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
+        }
+        .calendar-day {
+            background-color: var(--day-bg);
+            border: 1px solid var(--calendar-border);
+            padding: 2px;
+            min-height: 50px;
+            font-size: 10px;
+            position: relative;
+            overflow: hidden;
+        }
+        .date {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 12px;
+            margin-bottom: 2px;
+        }
+        .guest {
+            font-size: 8px;
+            margin-bottom: 1px;
+            padding: 1px;
+            border-radius: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            color: var(--text-color);
+            border: 1px solid rgba(0,0,0,0.1);
+        }
+        .day-of-week {
+            text-align: center;
+            font-weight: bold;
+            padding: 2px;
+            background-color: var(--header-bg);
+            font-size: 10px;
+            color: white;
+        }
+        .form-container {
+            background-color: var(--calendar-bg);
+            padding: 10px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            border: 1px solid var(--calendar-border);
+        }
+        .form { display: flex; flex-direction: column; gap: 5px; }
+        input, select {
+            padding: 5px;
+            font-size: 12px;
+            border: 1px solid var(--calendar-border);
+            border-radius: 5px;
+            font-family: 'Poppins', sans-serif;
+        }
+        h2 {
+            color: var(--primary-color);
+            margin: 0 0 5px 0;
+            font-size: 14px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="welcome-message">BERN IS WAITING FOR YOU!</div>
+        <div class="form-container">
+            <h2><i class="far fa-calendar-alt"></i> Book Your Stay</h2>
+            <div class="form">
+                <input type="text" id="newGuestName" placeholder="Your Name">
+                <input type="date" id="bookStartDate">
+                <input type="date" id="bookEndDate">
+                <button id="bookStayBtn" class="button"><i class="fas fa-check"></i> Save</button>
+            </div>
         </div>
-        <script type="module">
+        <div class="controls">
+            <button id="prevBtn" class="button"><i class="fas fa-chevron-left"></i> Prev</button>
+            <div id="currentMonthYear"></div>
+            <button id="nextBtn" class="button">Next <i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div id="calendarContainer" class="calendar-container"></div>
+        <div class="form-container">
+            <h2><i class="fas fa-edit"></i> Update Your Stay</h2>
+            <div class="form">
+                <input type="text" id="guestName" placeholder="Your Name">
+                <input type="date" id="newStartDate">
+                <input type="date" id="newEndDate">
+                <button id="updateStayBtn" class="button"><i class="fas fa-sync-alt"></i> Update</button>
+            </div>
+        </div>
+    </div>
+    <script type="module">
         import { bookings, days, getGuestsForDay, bookStay, updateStay } from './booking-system.js';
 
         let currentDate = new Date();
