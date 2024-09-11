@@ -208,57 +208,59 @@
 
         let bookings = [];
 
-function loadBookings() {
-    const storedBookings = localStorage.getItem('bookings');
-    if (storedBookings) {
-        bookings = JSON.parse(storedBookings, (key, value) => {
-            if (key === 'startDate' || key === 'endDate') {
-                return new Date(value);
+        function loadBookings() {
+            const storedBookings = localStorage.getItem('bookings');
+            if (storedBookings) {
+                bookings = JSON.parse(storedBookings, (key, value) => {
+                    if (key === 'startDate' || key === 'endDate') {
+                        return new Date(value);
+                    }
+                    return value;
+                });
+            } else {
+                bookings = initialBookings.map(booking => ({
+                    ...booking,
+                    startDate: new Date(booking.startDate),
+                    endDate: new Date(booking.endDate)
+                }));
+                saveBookings();
             }
-            return value;
-        });
-    }
-}
+        }
 
-function saveBookings() {
-    localStorage.setItem('bookings', JSON.stringify(bookings));
-}
+        function saveBookings() {
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+        }
 
-function bookStay(name, startDate, endDate) {
-    const start = new Date(startDate);
-    const end = new Date(endDate);
-    if (start > end) {
-        throw new Error("End date must be after start date");
-    }
-    bookings.push({ name, startDate: start, endDate: end });
-    saveBookings();
-}
+        function bookStay(name, startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (start > end) {
+                throw new Error("End date must be after start date");
+            }
+            bookings.push({ name, startDate: start, endDate: end });
+            saveBookings();
+        }
 
-function updateStay(name, newStartDate, newEndDate) {
-    const bookingIndex = bookings.findIndex(booking => booking.name === name);
-    if (bookingIndex === -1) {
-        throw new Error("Booking not found");
-    }
-    const start = new Date(newStartDate);
-    const end = new Date(newEndDate);
-    if (start > end) {
-        throw new Error("End date must be after start date");
-    }
-    bookings[bookingIndex].startDate = start;
-    bookings[bookingIndex].endDate = end;
-    saveBookings();
-}
+        function updateStay(name, newStartDate, newEndDate) {
+            const bookingIndex = bookings.findIndex(booking => booking.name === name);
+            if (bookingIndex === -1) {
+                throw new Error("Booking not found");
+            }
+            const start = new Date(newStartDate);
+            const end = new Date(newEndDate);
+            if (start > end) {
+                throw new Error("End date must be after start date");
+            }
+            bookings[bookingIndex].startDate = start;
+            bookings[bookingIndex].endDate = end;
+            saveBookings();
+        }
 
-function getGuestsForDay(date) {
-    return bookings.filter(booking => {
-        const bookingStart = new Date(booking.startDate);
-        const bookingEnd = new Date(booking.endDate);
-        bookingStart.setHours(0, 0, 0, 0);
-        bookingEnd.setHours(0, 0, 0, 0);
-        date.setHours(0, 0, 0, 0);
-        return date >= bookingStart && date <= bookingEnd;
-    });
-}
+        function getGuestsForDay(date) {
+            return bookings.filter(booking => 
+                date >= booking.startDate && date <= booking.endDate
+            );
+        }
 
         function renderCalendar() {
             const containerEl = document.getElementById('calendarContainer');
@@ -312,14 +314,13 @@ function getGuestsForDay(date) {
             renderCalendar();
         });
 
-        document.getElementById('bookStayBtn').addEventListener('click', function() {
+        document.getElementById('bookStayBtn').addEventListener('click', () => {
             const name = document.getElementById('newGuestName').value;
             const startDate = document.getElementById('bookStartDate').value;
             const endDate = document.getElementById('bookEndDate').value;
-        
             try {
                 bookStay(name, startDate, endDate);
-                renderCalendars();
+                renderCalendar();
                 document.getElementById('newGuestName').value = '';
                 document.getElementById('bookStartDate').value = '';
                 document.getElementById('bookEndDate').value = '';
@@ -327,15 +328,14 @@ function getGuestsForDay(date) {
                 alert(error.message);
             }
         });
-        
-        document.getElementById('updateStayBtn').addEventListener('click', function() {
+
+        document.getElementById('updateStayBtn').addEventListener('click', () => {
             const name = document.getElementById('guestName').value;
             const newStartDate = document.getElementById('newStartDate').value;
             const newEndDate = document.getElementById('newEndDate').value;
-        
             try {
                 updateStay(name, newStartDate, newEndDate);
-                renderCalendars();
+                renderCalendar();
                 document.getElementById('guestName').value = '';
                 document.getElementById('newStartDate').value = '';
                 document.getElementById('newEndDate').value = '';
@@ -345,7 +345,7 @@ function getGuestsForDay(date) {
         });
 
         loadBookings();
-        renderCalendars();
+        renderCalendar();
     </script>
 </body>
 </html>
