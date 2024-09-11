@@ -196,7 +196,7 @@
         </div>
     </div>
     <script type="module">
-        import { bookings, days, getGuestsForDay, bookStay, updateStay } from './booking-system.js';
+        import { days } from './booking-system.js';
 
         let currentDate = new Date();
 
@@ -205,6 +205,44 @@
             '#A3E4D7', '#F9E79F', '#D5DBDB', '#ABEBC6', '#F5CBA7',
             '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'
         ];
+
+        // Load bookings from localStorage or initialize an empty array
+        let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+
+        function saveBookings() {
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+        }
+
+        function bookStay(name, startDate, endDate) {
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (start > end) {
+                throw new Error("End date must be after start date");
+            }
+            bookings.push({ name, startDate: start, endDate: end });
+            saveBookings();
+        }
+
+        function updateStay(name, newStartDate, newEndDate) {
+            const bookingIndex = bookings.findIndex(booking => booking.name === name);
+            if (bookingIndex === -1) {
+                throw new Error("Booking not found");
+            }
+            const start = new Date(newStartDate);
+            const end = new Date(newEndDate);
+            if (start > end) {
+                throw new Error("End date must be after start date");
+            }
+            bookings[bookingIndex].startDate = start;
+            bookings[bookingIndex].endDate = end;
+            saveBookings();
+        }
+
+        function getGuestsForDay(date) {
+            return bookings.filter(booking => 
+                date >= new Date(booking.startDate) && date <= new Date(booking.endDate)
+            );
+        }
 
         function renderCalendar() {
             const containerEl = document.getElementById('calendarContainer');
