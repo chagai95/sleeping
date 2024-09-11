@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chagai Booking Calendar</title>
+    <title>Mobile Booking Calendar</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
@@ -25,7 +25,7 @@
             padding: 10px;
             background-color: var(--background-color);
             color: var(--text-color);
-            font-size: 14px;
+            font-size: 12px;
         }
         .container { max-width: 100%; margin: 0 auto; }
         .welcome-message {
@@ -33,11 +33,11 @@
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             color: white;
-            padding: 20px;
+            padding: 15px;
             text-align: center;
-            font-size: 24px;
-            margin-bottom: 20px;
-            border-radius: 15px;
+            font-size: 18px;
+            margin-bottom: 15px;
+            border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             font-weight: 600;
             letter-spacing: 1px;
@@ -45,106 +45,131 @@
             overflow: hidden;
             position: relative;
         }
+        .welcome-message::before {
+            content: "CHAGAI IS WAITING FOR YOU!";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateZ(-100px) rotateY(0deg);
+            animation: rotate-in 8s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.8);
+        }
         @keyframes gradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+        @keyframes rotate-in {
+            0%, 100% { transform: translateZ(-100px) rotateY(0deg); opacity: 0; }
+            25%, 75% { transform: translateZ(0) rotateY(360deg); opacity: 1; }
+            50% { transform: translateZ(100px) rotateY(720deg); opacity: 1; }
+        }
         .controls {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
         .button {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 10px 15px;
+            padding: 5px 10px;
             cursor: pointer;
-            font-size: 14px;
-            border-radius: 30px;
+            font-size: 12px;
+            border-radius: 15px;
             transition: all 0.3s ease;
             font-weight: 600;
-            display: flex;
-            align-items: center;
-            gap: 5px;
         }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 1px;
-            background-color: #d1d1e0;
-            border: 1px solid #d1d1e0;
+        .calendar-container {
+            background-color: var(--calendar-bg);
             border-radius: 10px;
-            overflow: hidden;
+            padding: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            border: 1px solid var(--calendar-border);
         }
         .calendar-header {
             background-color: var(--header-bg);
             color: white;
-            padding: 8px 0;
+            padding: 5px;
             text-align: center;
             font-weight: 600;
-            font-size: 12px;
+            border-radius: 5px 5px 0 0;
+            font-size: 14px;
+        }
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 2px;
         }
         .calendar-day {
-            background-color: #ffffff;
-            padding: 5px;
-            min-height: 60px;
-            font-size: 12px;
-            border: 1px solid #e0e0e0;
-            display: flex;
-            flex-direction: column;
+            background-color: var(--day-bg);
+            border: 1px solid var(--calendar-border);
+            padding: 2px;
+            min-height: 50px;
+            font-size: 10px;
+            position: relative;
+            overflow: hidden;
         }
         .date {
-            font-weight: 600;
+            font-weight: bold;
             color: var(--primary-color);
-            font-size: 14px;
+            font-size: 12px;
             margin-bottom: 2px;
         }
         .guest {
-            font-size: 10px;
+            font-size: 8px;
             margin-bottom: 1px;
-            padding: 2px 4px;
-            border-radius: 10px;
+            padding: 1px;
+            border-radius: 2px;
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
-            color: #34495e;
+            color: var(--text-color);
             border: 1px solid rgba(0,0,0,0.1);
+        }
+        .day-of-week {
+            text-align: center;
+            font-weight: bold;
+            padding: 2px;
+            background-color: var(--header-bg);
+            font-size: 10px;
+            color: white;
         }
         .form-container {
             background-color: var(--calendar-bg);
-            padding: 15px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            margin-bottom: 20px;
-            border: 2px solid var(--calendar-border);
-        }
-        .form { display: flex; flex-direction: column; gap: 10px; }
-        input, select {
             padding: 10px;
-            font-size: 14px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+            border: 1px solid var(--calendar-border);
+        }
+        .form { display: flex; flex-direction: column; gap: 5px; }
+        input, select {
+            padding: 5px;
+            font-size: 12px;
             border: 1px solid var(--calendar-border);
             border-radius: 5px;
             font-family: 'Poppins', sans-serif;
         }
         h2 {
             color: var(--primary-color);
-            margin: 0 0 10px 0;
-            font-size: 18px;
-            font-weight: 600;
-        }
-        #currentMonthYear {
-            font-size: 18px;
-            color: var(--header-bg);
+            margin: 0 0 5px 0;
+            font-size: 14px;
             font-weight: 600;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="welcome-message">CHAGAI IS WAITING FOR YOU!</div>
+        <div class="welcome-message">BERN IS WAITING FOR YOU!</div>
         <div class="form-container">
             <h2><i class="far fa-calendar-alt"></i> Book Your Stay</h2>
             <div class="form">
@@ -160,11 +185,20 @@
             <button id="nextBtn" class="button">Next <i class="fas fa-chevron-right"></i></button>
         </div>
         <div id="calendarContainer" class="calendar-container"></div>
+        <div class="form-container">
+            <h2><i class="fas fa-edit"></i> Update Your Stay</h2>
+            <div class="form">
+                <input type="text" id="guestName" placeholder="Your Name">
+                <input type="date" id="newStartDate">
+                <input type="date" id="newEndDate">
+                <button id="updateStayBtn" class="button"><i class="fas fa-sync-alt"></i> Update</button>
+            </div>
+        </div>
     </div>
-    <script>
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    <script type="module">
+        import { days, bookings as initialBookings } from './booking-system.js';
+
         let currentDate = new Date();
-        let bookings = [];
 
         const colors = [
             '#AED6F1', '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D2B4DE',
@@ -172,63 +206,90 @@
             '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'
         ];
 
+        let bookings = [];
+
         function loadBookings() {
             const storedBookings = localStorage.getItem('bookings');
             if (storedBookings) {
-                bookings = JSON.parse(storedBookings);
+                bookings = JSON.parse(storedBookings, (key, value) => {
+                    if (key === 'startDate' || key === 'endDate') {
+                        return new Date(value);
+                    }
+                    return value;
+                });
+            } else {
+                bookings = initialBookings.map(booking => ({
+                    ...booking,
+                    startDate: new Date(booking.startDate),
+                    endDate: new Date(booking.endDate)
+                }));
+                saveBookings();
             }
-            console.log('Loaded bookings:', bookings);
         }
 
         function saveBookings() {
             localStorage.setItem('bookings', JSON.stringify(bookings));
-            console.log('Saved bookings:', bookings);
         }
 
         function bookStay(name, startDate, endDate) {
-            if (!name || !startDate || !endDate) {
-                throw new Error("All fields are required");
-            }
             const start = new Date(startDate);
             const end = new Date(endDate);
-            for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                bookings.push({ name, date: d.toISOString().split('T')[0] });
+            if (start > end) {
+                throw new Error("End date must be after start date");
             }
+            bookings.push({ name, startDate: start, endDate: end });
+            saveBookings();
+        }
+
+        function updateStay(name, newStartDate, newEndDate) {
+            const bookingIndex = bookings.findIndex(booking => booking.name === name);
+            if (bookingIndex === -1) {
+                throw new Error("Booking not found");
+            }
+            const start = new Date(newStartDate);
+            const end = new Date(newEndDate);
+            if (start > end) {
+                throw new Error("End date must be after start date");
+            }
+            bookings[bookingIndex].startDate = start;
+            bookings[bookingIndex].endDate = end;
             saveBookings();
         }
 
         function getGuestsForDay(date) {
-            const dateString = date.toISOString().split('T')[0];
-            return bookings.filter(booking => booking.date === dateString);
+            return bookings.filter(booking => 
+                date >= booking.startDate && date <= booking.endDate
+            );
         }
 
         function renderCalendar() {
             const containerEl = document.getElementById('calendarContainer');
             containerEl.innerHTML = '';
-            const calendarGrid = document.createElement('div');
-            calendarGrid.className = 'calendar-grid';
-            
+            const headerEl = document.createElement('div');
+            headerEl.className = 'calendar-header';
+            headerEl.textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+            containerEl.appendChild(headerEl);
+            const gridEl = document.createElement('div');
+            gridEl.className = 'calendar-grid';
+            containerEl.appendChild(gridEl);
             days.forEach(day => {
-                const headerEl = document.createElement('div');
-                headerEl.className = 'calendar-header';
-                headerEl.textContent = day.slice(0, 3);
-                calendarGrid.appendChild(headerEl);
+                const dayOfWeekEl = document.createElement('div');
+                dayOfWeekEl.className = 'day-of-week';
+                dayOfWeekEl.textContent = day.slice(0, 1);
+                gridEl.appendChild(dayOfWeekEl);
             });
-
-            const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-
-            for (let d = 0; d < monthStart.getDay(); d++) {
-                calendarGrid.appendChild(document.createElement('div'));
+            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            for (let i = 0; i < firstDay.getDay(); i++) {
+                gridEl.appendChild(document.createElement('div'));
             }
-
-            for (let d = 1; d <= monthEnd.getDate(); d++) {
-                const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), d);
+            for (let i = 1; i <= lastDay.getDate(); i++) {
+                const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
                 const dayEl = document.createElement('div');
                 dayEl.className = 'calendar-day';
                 const dateEl = document.createElement('div');
                 dateEl.className = 'date';
-                dateEl.textContent = d;
+                dateEl.textContent = i;
                 dayEl.appendChild(dateEl);
                 const guestsForDay = getGuestsForDay(date);
                 guestsForDay.forEach((guest, index) => {
@@ -238,11 +299,9 @@
                     guestEl.style.backgroundColor = colors[index % colors.length];
                     dayEl.appendChild(guestEl);
                 });
-                calendarGrid.appendChild(dayEl);
+                gridEl.appendChild(dayEl);
             }
-
-            containerEl.appendChild(calendarGrid);
-            document.getElementById('currentMonthYear').textContent = currentDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
+            document.getElementById('currentMonthYear').textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         }
 
         document.getElementById('prevBtn').addEventListener('click', () => {
@@ -256,7 +315,7 @@
         });
 
         document.getElementById('bookStayBtn').addEventListener('click', () => {
-            const name = document.getElementById('newGuestName').value.trim();
+            const name = document.getElementById('newGuestName').value;
             const startDate = document.getElementById('bookStartDate').value;
             const endDate = document.getElementById('bookEndDate').value;
             try {
@@ -270,10 +329,23 @@
             }
         });
 
-        window.addEventListener('DOMContentLoaded', () => {
-            loadBookings();
-            renderCalendar();
+        document.getElementById('updateStayBtn').addEventListener('click', () => {
+            const name = document.getElementById('guestName').value;
+            const newStartDate = document.getElementById('newStartDate').value;
+            const newEndDate = document.getElementById('newEndDate').value;
+            try {
+                updateStay(name, newStartDate, newEndDate);
+                renderCalendar();
+                document.getElementById('guestName').value = '';
+                document.getElementById('newStartDate').value = '';
+                document.getElementById('newEndDate').value = '';
+            } catch (error) {
+                alert(error.message);
+            }
         });
+
+        loadBookings();
+        renderCalendar();
     </script>
 </body>
 </html>
