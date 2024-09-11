@@ -218,12 +218,14 @@
                 bookings = JSON.parse(storedBookings);
             } else {
                 bookings = initialBookings;
-                saveBookings();
             }
+            saveBookings(); // Ensure bookings are always saved after loading
+            console.log('Loaded bookings:', bookings);
         }
     
         function saveBookings() {
             localStorage.setItem('bookings', JSON.stringify(bookings));
+            console.log('Saved bookings:', bookings);
         }
     
         function bookStay(name, startDate, endDate) {
@@ -234,6 +236,7 @@
             }
             bookings.push({ name, startDate, endDate });
             saveBookings();
+            console.log('Booked stay:', { name, startDate, endDate });
         }
     
         function updateStay(name, newStartDate, newEndDate) {
@@ -249,6 +252,7 @@
             bookings[bookingIndex].startDate = newStartDate;
             bookings[bookingIndex].endDate = newEndDate;
             saveBookings();
+            console.log('Updated stay:', bookings[bookingIndex]);
         }
     
         function getGuestsForDay(date) {
