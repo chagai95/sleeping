@@ -63,9 +63,10 @@
 
         function loadBookings() {
             const storedBookings = localStorage.getItem('bookings');
-            bookings = storedBookings ? JSON.parse(storedBookings) : [];
-            if (bookings.length === 0) {
-                // Add initial bookings if none exist
+            if (storedBookings) {
+                bookings = JSON.parse(storedBookings);
+            } else {
+                // If no bookings in localStorage, add initial bookings
                 const initialBookings = [
                     { name: "Casper", startDate: '2024-09-01', endDate: '2024-09-03' },
                     { name: "Balthazar", startDate: '2024-09-05', endDate: '2024-09-07' },
@@ -75,10 +76,12 @@
                     bookStay(booking.name, booking.startDate, booking.endDate);
                 });
             }
+            console.log('Loaded bookings:', bookings);
         }
 
         function saveBookings() {
             localStorage.setItem('bookings', JSON.stringify(bookings));
+            console.log('Saved bookings:', bookings);
         }
 
         function bookStay(name, startDate, endDate) {
@@ -86,7 +89,10 @@
             const start = new Date(startDate);
             const end = new Date(endDate);
             for (let d = new Date(start); d <= end; d.setDate(d.getDate() + 1)) {
-                bookings.push({ name, date: d.toISOString().split('T')[0] });
+                const dateString = d.toISOString().split('T')[0];
+                if (!bookings.some(b => b.name === name && b.date === dateString)) {
+                    bookings.push({ name, date: dateString });
+                }
             }
             saveBookings();
         }
