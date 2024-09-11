@@ -206,6 +206,12 @@
             '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'
         ];
 
+        const initialBookings = [
+            { name: "Casper", startDate: new Date('2024-09-01'), endDate: new Date('2024-09-03') },
+            { name: "Balthazar", startDate: new Date('2024-09-05'), endDate: new Date('2024-09-07') },
+            { name: "Melchior", startDate: new Date('2024-09-10'), endDate: new Date('2024-09-12') }
+        ];
+
         function loadBookings() {
             const storedBookings = localStorage.getItem('bookings');
             if (storedBookings) {
@@ -216,7 +222,8 @@
                     return value;
                 });
             } else {
-                bookings = [];
+                bookings = initialBookings;
+                saveBookings();
             }
         }
 
