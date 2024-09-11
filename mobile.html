@@ -33,20 +33,42 @@
             background-size: 400% 400%;
             animation: gradient 15s ease infinite;
             color: white;
-            padding: 10px;
+            padding: 15px;
             text-align: center;
-            font-size: 16px;
-            margin-bottom: 10px;
+            font-size: 18px;
+            margin-bottom: 15px;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             font-weight: 600;
             letter-spacing: 1px;
             text-transform: uppercase;
+            overflow: hidden;
+            position: relative;
+        }
+        .welcome-message::before {
+            content: "BERN IS WAITING FOR YOU!";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: inherit;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transform: translateZ(-100px) rotateY(0deg);
+            animation: rotate-in 8s ease-in-out infinite;
+            text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.8);
         }
         @keyframes gradient {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
+        }
+        @keyframes rotate-in {
+            0%, 100% { transform: translateZ(-100px) rotateY(0deg); opacity: 0; }
+            25%, 75% { transform: translateZ(0) rotateY(360deg); opacity: 1; }
+            50% { transform: translateZ(100px) rotateY(720deg); opacity: 1; }
         }
         .controls {
             display: flex;
@@ -176,6 +198,11 @@
     <script type="module">
         import { bookings, days, getGuestsForDay, bookStay, updateStay } from './booking-system.js';
         let currentDate = new Date();
+        const colors = [
+            '#AED6F1', '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D2B4DE',
+            '#A3E4D7', '#F9E79F', '#D5DBDB', '#ABEBC6', '#F5CBA7',
+            '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'
+        ];
         function renderCalendar() {
             const containerEl = document.getElementById('calendarContainer');
             containerEl.innerHTML = '';
@@ -206,11 +233,11 @@
                 dateEl.textContent = i;
                 dayEl.appendChild(dateEl);
                 const guestsForDay = getGuestsForDay(date);
-                guestsForDay.forEach(guest => {
+                guestsForDay.forEach((guest, index) => {
                     const guestEl = document.createElement('div');
                     guestEl.className = 'guest';
                     guestEl.textContent = guest.name;
-                    guestEl.style.backgroundColor = guest.color;
+                    guestEl.style.backgroundColor = colors[index % colors.length];
                     dayEl.appendChild(guestEl);
                 });
                 gridEl.appendChild(dayEl);
