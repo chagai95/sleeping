@@ -196,7 +196,7 @@
         </div>
     </div>
     <script type="module">
-        import { days, bookings as initialBookings, getGuestsForDay as getInitialGuestsForDay, bookStay as initialBookStay, updateStay as initialUpdateStay } from './booking-system.js';
+        import { days, bookings as initialBookings } from './booking-system.js';
 
         let currentDate = new Date();
 
@@ -206,36 +206,60 @@
             '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'
         ];
 
-        // Initialize bookings from the imported data
-        let bookings = [...initialBookings];
+        let bookings = [];
+
+        function loadBookings() {
+            const storedBookings = localStorage.getItem('bookings');
+            if (storedBookings) {
+                bookings = JSON.parse(storedBookings, (key, value) => {
+                    if (key === 'startDate' || key === 'endDate') {
+                        return new Date(value);
+                    }
+                    return value;
+                });
+            } else {
+                bookings = initialBookings.map(booking => ({
+                    ...booking,
+                    startDate: new Date(booking.startDate),
+                    endDate: new Date(booking.endDate)
+                }));
+                saveBookings();
+            }
+        }
 
         function saveBookings() {
             localStorage.setItem('bookings', JSON.stringify(bookings));
         }
 
-        function loadBookings() {
-            const storedBookings = localStorage.getItem('bookings');
-            if (storedBookings) {
-                bookings = JSON.parse(storedBookings);
-            } else {
-                saveBookings(); // Save initial bookings if none exist in localStorage
-            }
-        }
-
         function bookStay(name, startDate, endDate) {
-            initialBookStay(name, startDate, endDate);
-            loadBookings(); // Reload bookings after adding a new one
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            if (start > end) {
+                throw new Error("End date must be after start date");
+            }
+            bookings.push({ name, startDate: start, endDate: end });
             saveBookings();
         }
 
         function updateStay(name, newStartDate, newEndDate) {
-            initialUpdateStay(name, newStartDate, newEndDate);
-            loadBookings(); // Reload bookings after updating
+            const bookingIndex = bookings.findIndex(booking => booking.name === name);
+            if (bookingIndex === -1) {
+                throw new Error("Booking not found");
+            }
+            const start = new Date(newStartDate);
+            const end = new Date(newEndDate);
+            if (start > end) {
+                throw new Error("End date must be after start date");
+            }
+            bookings[bookingIndex].startDate = start;
+            bookings[bookingIndex].endDate = end;
             saveBookings();
         }
 
         function getGuestsForDay(date) {
-            return getInitialGuestsForDay(date);
+            return bookings.filter(booking => 
+                date >= booking.startDate && date <= booking.endDate
+            );
         }
 
         function renderCalendar() {
@@ -320,7 +344,7 @@
             }
         });
 
-        loadBookings(); // Load bookings when the page initializes
+        loadBookings();
         renderCalendar();
     </script>
 </body>
