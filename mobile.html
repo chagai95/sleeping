@@ -1,186 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mobile Booking Calendar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Roboto', sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f0f0f0;
-        }
-        .container {
-            max-width: 100%;
-            margin: 0 auto;
-            padding: 10px;
-        }
-        .welcome-message {
-            background-color: #000000;
-            color: #ffff00;
-            padding: 15px;
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            text-transform: uppercase;
-        }
-        .welcome-message span {
-            color: #ff0000;
-        }
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 15px;
-        }
-        .button {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            cursor: pointer;
-            font-size: 14px;
-            border-radius: 5px;
-        }
-        .calendar-container {
-            background-color: white;
-            border-radius: 10px;
-            padding: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
-        }
-        .calendar-header {
-            background-color: #4a90e2;
-            color: white;
-            padding: 8px;
-            text-align: center;
-            font-weight: bold;
-            border-radius: 5px 5px 0 0;
-            font-size: 16px;
-        }
-        .calendar-grid {
-            display: grid;
-            grid-template-columns: repeat(7, 1fr);
-            gap: 2px;
-            margin-top: 5px;
-        }
-        .calendar-day {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            padding: 5px;
-            min-height: 40px;
-            font-size: 12px;
-            position: relative;
-            cursor: pointer;
-        }
-        .calendar-day:hover {
-            background-color: #e9e9e9;
-        }
-        .date {
-            font-weight: bold;
-            margin-bottom: 2px;
-        }
-        .guest {
-            font-size: 10px;
-            margin-bottom: 1px;
-            padding: 1px 2px;
-            border-radius: 2px;
-            color: white;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-        .booking-count {
-            font-weight: bold;
-            color: #4a90e2;
-            font-size: 10px;
-            position: absolute;
-            bottom: 2px;
-            right: 2px;
-        }
-        .form-container {
-            background-color: white;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            margin-bottom: 15px;
-        }
-        .form {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .date-range {
-            display: flex;
-            gap: 5px;
-        }
-        .date-range input {
-            flex: 1;
-        }
-        input, select {
-            padding: 8px;
-            font-size: 14px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-        h2 {
-            color: #4a90e2;
-            margin-top: 0;
-            font-size: 18px;
-        }
-        .day-of-week {
-            text-align: center;
-            font-weight: bold;
-            padding: 5px;
-            background-color: #e6e6e6;
-            font-size: 12px;
-        }
-        .other-month {
-            opacity: 0.5;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <div class="welcome-message">STAY IN <span>BERN</span></div>
-        <div class="form-container">
-            <h2>When are you staying?</h2>
-            <div class="form">
-                <input type="text" id="newGuestName" placeholder="Your Name">
-                <div class="date-range">
-                    <input type="date" id="bookStartDate">
-                    <input type="date" id="bookEndDate">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Mobile Booking Calendar</title>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+        <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+        <style>
+            :root {
+                --primary-color: #ff6b6b;
+                --secondary-color: #4ecdc4;
+                --accent-color: #feca57;
+                --background-color: #f7f1e3;
+                --text-color: #2d3436;
+                --calendar-bg: #ffffff;
+                --calendar-border: #d1d1e0;
+                --day-bg: #f0f0f5;
+                --day-hover: #e6e6fa;
+                --header-bg: #6c5ce7;
+            }
+            
+            body {
+                font-family: 'Poppins', sans-serif;
+                margin: 0;
+                padding: 10px;
+                background-color: var(--background-color);
+                color: var(--text-color);
+            }
+            
+            .container {
+                max-width: 100%;
+                margin: 0 auto;
+            }
+            
+            .welcome-message {
+                background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab);
+                background-size: 400% 400%;
+                animation: gradient 15s ease infinite;
+                color: white;
+                padding: 20px;
+                text-align: center;
+                font-size: 24px;
+                margin-bottom: 15px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                font-weight: 600;
+                letter-spacing: 1px;
+                text-transform: uppercase;
+                overflow: hidden;
+                position: relative;
+            }
+    
+            .welcome-message::before {
+                content: "BERN IS WAITING FOR YOU!";
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: inherit;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transform: translateZ(-100px) rotateY(0deg);
+                animation: rotate-in 8s ease-in-out infinite;
+                text-shadow: 0 0 10px rgba(255,255,255,0.8), 0 0 20px rgba(255,255,255,0.8), 0 0 30px rgba(255,255,255,0.8);
+            }
+    
+            @keyframes gradient {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
+    
+            @keyframes rotate-in {
+                0%, 100% { transform: translateZ(-100px) rotateY(0deg); opacity: 0; }
+                25%, 75% { transform: translateZ(0) rotateY(360deg); opacity: 1; }
+                50% { transform: translateZ(100px) rotateY(720deg); opacity: 1; }
+            }
+            
+            .controls {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 15px;
+            }
+            
+            .button {
+                background-color: var(--primary-color);
+                color: white;
+                border: none;
+                padding: 8px 12px;
+                cursor: pointer;
+                font-size: 14px;
+                border-radius: 20px;
+                transition: all 0.3s ease;
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 5px;
+            }
+            
+            .button:hover {
+                background-color: var(--secondary-color);
+                transform: translateY(-2px);
+            }
+            
+            .calendar-container {
+                background-color: var(--calendar-bg);
+                border-radius: 10px;
+                padding: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                margin-bottom: 15px;
+                border: 2px solid var(--calendar-border);
+            }
+            
+            .calendar-header {
+                background-color: var(--header-bg);
+                color: white;
+                padding: 10px;
+                text-align: center;
+                font-weight: 600;
+                border-radius: 5px 5px 0 0;
+                font-size: 16px;
+            }
+            
+            .calendar-grid {
+                display: grid;
+                grid-template-columns: repeat(7, 1fr);
+                gap: 2px;
+                margin-top: 5px;
+            }
+            
+            .calendar-day {
+                background-color: var(--day-bg);
+                border: 1px solid var(--calendar-border);
+                padding: 5px;
+                min-height: 40px;
+                font-size: 12px;
+                position: relative;
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+            
+            .calendar-day:hover {
+                background-color: var(--day-hover);
+                transform: scale(1.05);
+                z-index: 10;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            }
+            
+            .date {
+                font-weight: bold;
+                margin-bottom: 2px;
+                color: var(--primary-color);
+            }
+            
+            .guest {
+                font-size: 10px;
+                margin-bottom: 1px;
+                padding: 1px 2px;
+                border-radius: 2px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+                color: var(--text-color);
+                border: 1px solid rgba(0,0,0,0.1);
+            }
+            
+            .booking-count {
+                font-weight: bold;
+                color: var(--secondary-color);
+                font-size: 10px;
+                position: absolute;
+                bottom: 2px;
+                right: 2px;
+            }
+            
+            .form-container {
+                background-color: var(--calendar-bg);
+                padding: 15px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+                margin-bottom: 15px;
+                border: 2px solid var(--calendar-border);
+            }
+            
+            .form {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .date-range {
+                display: flex;
+                gap: 5px;
+            }
+            
+            .date-range input {
+                flex: 1;
+            }
+            
+            input, select {
+                padding: 8px;
+                font-size: 14px;
+                border: 1px solid var(--calendar-border);
+                border-radius: 5px;
+                font-family: 'Poppins', sans-serif;
+            }
+            
+            h2 {
+                color: var(--primary-color);
+                margin-top: 0;
+                font-size: 18px;
+                font-weight: 600;
+            }
+            
+            .day-of-week {
+                text-align: center;
+                font-weight: bold;
+                padding: 5px;
+                background-color: var(--header-bg);
+                font-size: 12px;
+                color: white;
+            }
+            
+            .other-month {
+                opacity: 0.5;
+            }
+            
+            #currentMonthYear {
+                font-size: 1.1em;
+                color: var(--header-bg);
+                font-weight: 600;
+            }
+            
+            @media (max-width: 480px) {
+                .button {
+                    padding: 6px 10px;
+                    font-size: 12px;
+                }
+                
+                .welcome-message {
+                    font-size: 20px;
+                    padding: 15px;
+                }
+                
+                .calendar-day {
+                    min-height: 30px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="welcome-message">
+                BERN IS WAITING FOR YOU!
+            </div>
+            <div class="form-container">
+                <h2><i class="far fa-calendar-alt"></i> When are you staying?</h2>
+                <div class="form">
+                    <input type="text" id="newGuestName" placeholder="Your Name">
+                    <div class="date-range">
+                        <input type="date" id="bookStartDate">
+                        <input type="date" id="bookEndDate">
+                    </div>
+                    <button id="bookStayBtn" class="button">
+                        <i class="fas fa-check"></i> Save
+                    </button>
                 </div>
-                <button id="bookStayBtn" class="button">Save</button>
+            </div>
+            <div class="controls">
+                <button id="prevBtn" class="button">
+                    <i class="fas fa-chevron-left"></i> Prev
+                </button>
+                <select id="viewSelect">
+                    <option value="month" selected>Month</option>
+                    <option value="week">Week</option>
+                    <option value="day">Day</option>
+                </select>
+                <button id="nextBtn" class="button">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            <div id="calendarContainer" class="calendar-container"></div>
+            <div class="form-container">
+                <h2><i class="fas fa-edit"></i> Update Your Stay</h2>
+                <div class="form">
+                    <input type="text" id="guestName" placeholder="Your Name">
+                    <div class="date-range">
+                        <input type="date" id="newStartDate">
+                        <input type="date" id="newEndDate">
+                    </div>
+                    <button id="updateStayBtn" class="button">
+                        <i class="fas fa-sync-alt"></i> Update Stay
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="controls">
-            <button id="prevBtn" class="button">&lt;</button>
-            <select id="viewSelect">
-                <option value="month" selected>Month</option>
-                <option value="week">Week</option>
-                <option value="day">Day</option>
-            </select>
-            <button id="nextBtn" class="button">&gt;</button>
-        </div>
-        <div id="calendarContainer" class="calendar-container"></div>
-        <div class="form-container">
-            <h2>Update Stay</h2>
-            <div class="form">
-                <input type="text" id="guestName" placeholder="Your Name">
-                <div class="date-range">
-                    <input type="date" id="newStartDate">
-                    <input type="date" id="newEndDate">
-                </div>
-                <button id="updateStayBtn" class="button">Update Stay</button>
-            </div>
-        </div>
-    </div>
 
     <script type="module">
         import { bookings, days, getGuestsForDay, bookStay, updateStay } from './booking-system.js';
