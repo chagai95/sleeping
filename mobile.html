@@ -257,9 +257,14 @@
         }
 
         function getGuestsForDay(date) {
-            return bookings.filter(booking => 
-                date >= booking.startDate && date <= booking.endDate
-            );
+            return bookings.filter(booking => {
+                const bookingStart = new Date(booking.startDate);
+                const bookingEnd = new Date(booking.endDate);
+                bookingStart.setHours(0, 0, 0, 0);
+                bookingEnd.setHours(0, 0, 0, 0);
+                date.setHours(0, 0, 0, 0);
+                return date >= bookingStart && date <= bookingEnd;
+            });
         }
 
         function renderCalendar() {
