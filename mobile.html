@@ -168,15 +168,15 @@
         const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let currentDate = new Date();
         let bookings = [];
-
+    
         const colors = ['#AED6F1', '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D2B4DE', '#A3E4D7', '#F9E79F', '#D5DBDB', '#ABEBC6', '#F5CBA7', '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'];
-
+    
         const initialBookings = [
             { name: "Casper", startDate: '2024-09-01', endDate: '2024-09-03' },
             { name: "Balthazar", startDate: '2024-09-05', endDate: '2024-09-07' },
             { name: "Melchior", startDate: '2024-09-10', endDate: '2024-09-12' }
         ];
-
+    
         function loadBookings() {
             const storedBookings = localStorage.getItem('bookings');
             if (storedBookings) {
@@ -187,12 +187,12 @@
             }
             console.log('Loaded bookings:', bookings);
         }
-
+    
         function saveBookings() {
             localStorage.setItem('bookings', JSON.stringify(bookings));
             console.log('Saved bookings:', bookings);
         }
-
+    
         function bookStay(name, startDate, endDate) {
             if (!name || !startDate || !endDate) {
                 throw new Error("All fields are required");
@@ -200,15 +200,21 @@
             bookings.push({ name, startDate, endDate });
             saveBookings();
         }
-
+    
         function getGuestsForDay(date) {
             return bookings.filter(booking => {
                 const bookingStart = new Date(booking.startDate);
                 const bookingEnd = new Date(booking.endDate);
+                
+                // Set all dates to midnight for accurate comparison
+                date.setHours(0, 0, 0, 0);
+                bookingStart.setHours(0, 0, 0, 0);
+                bookingEnd.setHours(0, 0, 0, 0);
+    
                 return date >= bookingStart && date <= bookingEnd;
             });
         }
-
+    
         function renderCalendar() {
             const containerEl = document.getElementById('calendarContainer');
             containerEl.innerHTML = '';
@@ -250,17 +256,17 @@
             }
             document.getElementById('currentMonthYear').textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         }
-
+    
         document.getElementById('prevBtn').addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() - 1);
             renderCalendar();
         });
-
+    
         document.getElementById('nextBtn').addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendar();
         });
-
+    
         document.getElementById('bookStayBtn').addEventListener('click', () => {
             const name = document.getElementById('newGuestName').value.trim();
             const startDate = document.getElementById('bookStartDate').value;
@@ -275,7 +281,7 @@
                 alert(error.message);
             }
         });
-
+    
         window.addEventListener('DOMContentLoaded', () => {
             loadBookings();
             renderCalendar();
