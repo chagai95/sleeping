@@ -215,7 +215,12 @@
         function loadBookings() {
             const storedBookings = localStorage.getItem('bookings');
             if (storedBookings) {
-                bookings = JSON.parse(storedBookings);
+                try {
+                    bookings = JSON.parse(storedBookings);
+                } catch (error) {
+                    console.error('Error parsing stored bookings:', error);
+                    bookings = initialBookings;
+                }
             } else {
                 bookings = initialBookings;
             }
@@ -224,13 +229,23 @@
         }
     
         function saveBookings() {
-            localStorage.setItem('bookings', JSON.stringify(bookings));
-            console.log('Saved bookings:', bookings);
+            try {
+                localStorage.setItem('bookings', JSON.stringify(bookings));
+                console.log('Saved bookings:', bookings);
+            } catch (error) {
+                console.error('Error saving bookings:', error);
+            }
         }
     
         function bookStay(name, startDate, endDate) {
+            if (!name || !startDate || !endDate) {
+                throw new Error("All fields are required");
+            }
             const start = new Date(startDate);
             const end = new Date(endDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                throw new Error("Invalid date format");
+            }
             if (start > end) {
                 throw new Error("End date must be after start date");
             }
@@ -246,6 +261,9 @@
             }
             const start = new Date(newStartDate);
             const end = new Date(newEndDate);
+            if (isNaN(start.getTime()) || isNaN(end.getTime())) {
+                throw new Error("Invalid date format");
+            }
             if (start > end) {
                 throw new Error("End date must be after start date");
             }
@@ -316,7 +334,7 @@
         });
     
         document.getElementById('bookStayBtn').addEventListener('click', () => {
-            const name = document.getElementById('newGuestName').value;
+            const name = document.getElementById('newGuestName').value.trim();
             const startDate = document.getElementById('bookStartDate').value;
             const endDate = document.getElementById('bookEndDate').value;
             try {
@@ -331,7 +349,7 @@
         });
     
         document.getElementById('updateStayBtn').addEventListener('click', () => {
-            const name = document.getElementById('guestName').value;
+            const name = document.getElementById('guestName').value.trim();
             const newStartDate = document.getElementById('newStartDate').value;
             const newEndDate = document.getElementById('newEndDate').value;
             try {
@@ -345,8 +363,10 @@
             }
         });
     
-        loadBookings();
-        renderCalendar();
+        window.addEventListener('load', () => {
+            loadBookings();
+            renderCalendar();
+        });
     </script>
 </body>
 </html>
