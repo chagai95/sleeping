@@ -32,19 +32,40 @@
 
         function loadBookings() {
             const stored = localStorage.getItem('bookings');
-            bookings = stored ? JSON.parse(stored) : [];
+            if (stored) {
+                bookings = JSON.parse(stored);
+                console.log("Loaded bookings:", bookings);
+            }
         }
 
         function saveBookings() {
             localStorage.setItem('bookings', JSON.stringify(bookings));
+            console.log("Saved bookings:", bookings);
+        }
+
+        function getDatesInRange(startDate, endDate) {
+            const dates = [];
+            let currentDate = new Date(startDate);
+            const end = new Date(endDate);
+            while (currentDate <= end) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            return dates;
         }
 
         function bookStay() {
-            const name = document.getElementById('name').value;
+            const name = document.getElementById('name').value.trim();
             const start = document.getElementById('startDate').value;
             const end = document.getElementById('endDate').value;
             if (name && start && end) {
-                bookings.push({name, startDate: start, endDate: end});
+                const dates = getDatesInRange(start, end);
+                dates.forEach(date => {
+                    bookings.push({
+                        name: name,
+                        date: date.toISOString().split('T')[0]
+                    });
+                });
                 saveBookings();
                 renderCalendar();
                 document.getElementById('name').value = '';
@@ -75,16 +96,14 @@
                 dayEl.className = 'day';
                 dayEl.textContent = day;
 
-                const currentDay = new Date(year, month, day);
-                bookings.forEach(booking => {
-                    const start = new Date(booking.startDate);
-                    const end = new Date(booking.endDate);
-                    if (currentDay >= start && currentDay <= end) {
-                        const bookingEl = document.createElement('div');
-                        bookingEl.className = 'booking';
-                        bookingEl.textContent = booking.name;
-                        dayEl.appendChild(bookingEl);
-                    }
+                const currentDay = new Date(year, month, day).toISOString().split('T')[0];
+                const dayBookings = bookings.filter(b => b.date === currentDay);
+
+                dayBookings.forEach(booking => {
+                    const bookingEl = document.createElement('div');
+                    bookingEl.className = 'booking';
+                    bookingEl.textContent = booking.name;
+                    dayEl.appendChild(bookingEl);
                 });
 
                 calendarEl.appendChild(dayEl);
