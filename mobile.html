@@ -165,25 +165,13 @@
         <div id="calendarContainer" class="calendar-container"></div>
     </div>
     <script>
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
         let currentDate = new Date();
         let bookings = [];
-    
-        const colors = ['#AED6F1', '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D2B4DE', '#A3E4D7', '#F9E79F', '#D5DBDB', '#ABEBC6', '#F5CBA7', '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'];
-    
-        const initialBookings = [
-            { name: "Casper", startDate: '2024-09-01', endDate: '2024-09-03' },
-            { name: "Balthazar", startDate: '2024-09-05', endDate: '2024-09-07' },
-            { name: "Melchior", startDate: '2024-09-10', endDate: '2024-09-12' }
-        ];
     
         function loadBookings() {
             const storedBookings = localStorage.getItem('bookings');
             if (storedBookings) {
                 bookings = JSON.parse(storedBookings);
-            } else {
-                bookings = initialBookings;
-                saveBookings();
             }
             console.log('Loaded bookings:', bookings);
         }
@@ -201,59 +189,67 @@
             saveBookings();
         }
     
-        function getGuestsForDay(date) {
-            return bookings.filter(booking => {
-                const bookingStart = new Date(booking.startDate);
-                const bookingEnd = new Date(booking.endDate);
-                
-                // Set all dates to midnight for accurate comparison
-                date.setHours(0, 0, 0, 0);
-                bookingStart.setHours(0, 0, 0, 0);
-                bookingEnd.setHours(0, 0, 0, 0);
-    
-                return date >= bookingStart && date <= bookingEnd;
-            });
+        function dateRange(start, end) {
+            const dates = [];
+            let currentDate = new Date(start);
+            while (currentDate <= new Date(end)) {
+                dates.push(new Date(currentDate));
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+            return dates;
         }
     
         function renderCalendar() {
             const containerEl = document.getElementById('calendarContainer');
             containerEl.innerHTML = '';
-            const headerEl = document.createElement('div');
-            headerEl.className = 'calendar-header';
-            headerEl.textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-            containerEl.appendChild(headerEl);
+            
+            const monthStart = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            const monthEnd = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+            const startDate = new Date(monthStart);
+            startDate.setDate(startDate.getDate() - startDate.getDay());
+            const endDate = new Date(monthEnd);
+            endDate.setDate(endDate.getDate() + (6 - endDate.getDay()));
+    
+            const dates = dateRange(startDate, endDate);
+            
             const gridEl = document.createElement('div');
-            gridEl.className = 'calendar-grid';
-            containerEl.appendChild(gridEl);
-            days.forEach(day => {
-                const dayOfWeekEl = document.createElement('div');
-                dayOfWeekEl.className = 'day-of-week';
-                dayOfWeekEl.textContent = day.slice(0, 1);
-                gridEl.appendChild(dayOfWeekEl);
-            });
-            const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            const lastDay = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
-            for (let i = 0; i < firstDay.getDay(); i++) {
-                gridEl.appendChild(document.createElement('div'));
-            }
-            for (let i = 1; i <= lastDay.getDate(); i++) {
-                const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+            gridEl.style.display = 'grid';
+            gridEl.style.gridTemplateColumns = 'repeat(7, 1fr)';
+            
+            ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].forEach(day => {
                 const dayEl = document.createElement('div');
-                dayEl.className = 'calendar-day';
-                const dateEl = document.createElement('div');
-                dateEl.className = 'date';
-                dateEl.textContent = i;
-                dayEl.appendChild(dateEl);
-                const guestsForDay = getGuestsForDay(date);
-                guestsForDay.forEach((guest, index) => {
-                    const guestEl = document.createElement('div');
-                    guestEl.className = 'guest';
-                    guestEl.textContent = guest.name;
-                    guestEl.style.backgroundColor = colors[index % colors.length];
-                    dayEl.appendChild(guestEl);
-                });
+                dayEl.textContent = day;
+                dayEl.style.textAlign = 'center';
+                dayEl.style.fontWeight = 'bold';
                 gridEl.appendChild(dayEl);
-            }
+            });
+    
+            dates.forEach(date => {
+                const dayEl = document.createElement('div');
+                dayEl.style.border = '1px solid #ccc';
+                dayEl.style.padding = '5px';
+                dayEl.style.minHeight = '80px';
+                
+                const dateEl = document.createElement('div');
+                dateEl.textContent = date.getDate();
+                dayEl.appendChild(dateEl);
+    
+                bookings.forEach(booking => {
+                    if (date >= new Date(booking.startDate) && date <= new Date(booking.endDate)) {
+                        const bookingEl = document.createElement('div');
+                        bookingEl.textContent = booking.name;
+                        bookingEl.style.backgroundColor = '#AED6F1';
+                        bookingEl.style.margin = '2px 0';
+                        bookingEl.style.padding = '2px';
+                        bookingEl.style.borderRadius = '3px';
+                        dayEl.appendChild(bookingEl);
+                    }
+                });
+    
+                gridEl.appendChild(dayEl);
+            });
+    
+            containerEl.appendChild(gridEl);
             document.getElementById('currentMonthYear').textContent = currentDate.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
         }
     
