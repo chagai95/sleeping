@@ -303,7 +303,7 @@
             days.forEach(day => {
                 const headerEl = document.createElement('div');
                 headerEl.className = 'calendar-header';
-                headerEl.textContent = day;
+                headerEl.textContent = day.slice(0, 3);
                 calendarGrid.appendChild(headerEl);
             });
 
@@ -345,11 +345,17 @@
         }
 
         function renderGuests(container, guests) {
-            guests.forEach((guest) => {
+            const colors = [
+                '#AED6F1', '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D2B4DE',
+                '#A3E4D7', '#F9E79F', '#D5DBDB', '#ABEBC6', '#F5CBA7',
+                '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'
+            ];
+            
+            guests.forEach((guest, index) => {
                 const guestEl = document.createElement('div');
                 guestEl.className = 'guest';
                 guestEl.textContent = guest.name;
-                guestEl.style.backgroundColor = guest.color;
+                guestEl.style.backgroundColor = colors[index % colors.length];
                 container.appendChild(guestEl);
             });
         }
@@ -398,4 +404,5 @@
 
         renderCalendars();
     </script>
-</body></html>
+</body>
+</html>
