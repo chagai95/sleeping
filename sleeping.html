@@ -288,9 +288,9 @@
 
     <script type="module">
         import { bookings, days, getGuestsForDay, bookStay, updateStay } from './booking-system.js';
-
+    
         let currentDate = new Date('2024-09-01');
-
+    
         function renderCalendars() {
             const containerEl = document.getElementById('calendarContainer');
             containerEl.innerHTML = '';
@@ -306,75 +306,69 @@
                 headerEl.textContent = day.slice(0, 3);
                 calendarGrid.appendChild(headerEl);
             });
-
+    
             const monthStart = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
             const monthEnd = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
-
+    
             for (let d = 0; d < monthStart.getDay(); d++) {
                 calendarGrid.appendChild(document.createElement('div'));
             }
-
+    
             for (let d = 1; d <= monthEnd.getDate(); d++) {
                 const dayDate = new Date(monthDate.getFullYear(), monthDate.getMonth(), d);
                 const dayEl = document.createElement('div');
                 dayEl.className = 'calendar-day';
-
+    
                 const dateEl = document.createElement('div');
                 dateEl.className = 'date';
                 dateEl.textContent = d;
                 dayEl.appendChild(dateEl);
-
+    
                 const guestsContainer = document.createElement('div');
                 guestsContainer.className = 'guests-container';
                 dayEl.appendChild(guestsContainer);
-
+    
                 const guestsForDay = getGuestsForDay(dayDate);
                 renderGuests(guestsContainer, guestsForDay);
-
+    
                 const countEl = document.createElement('div');
                 countEl.className = 'guest-count';
                 countEl.textContent = `Total: ${guestsForDay.length}`;
                 dayEl.appendChild(countEl);
-
+    
                 calendarGrid.appendChild(dayEl);
             }
-
+    
             containerEl.appendChild(calendarGrid);
-
+    
             document.getElementById('currentMonthYear').textContent = monthDate.toLocaleString('en-US', { month: 'long', year: 'numeric' });
         }
-
+    
         function renderGuests(container, guests) {
-            const colors = [
-                '#AED6F1', '#F5B7B1', '#A9DFBF', '#FAD7A0', '#D2B4DE',
-                '#A3E4D7', '#F9E79F', '#D5DBDB', '#ABEBC6', '#F5CBA7',
-                '#AEB6BF', '#FADBD8', '#D1F2EB', '#FCF3CF', '#D6EAF8'
-            ];
-            
-            guests.forEach((guest, index) => {
+            guests.forEach((guest) => {
                 const guestEl = document.createElement('div');
                 guestEl.className = 'guest';
                 guestEl.textContent = guest.name;
-                guestEl.style.backgroundColor = colors[index % colors.length];
+                guestEl.style.backgroundColor = guest.color;
                 container.appendChild(guestEl);
             });
         }
-
+    
         document.getElementById('prevMonth').addEventListener('click', function() {
             currentDate.setMonth(currentDate.getMonth() - 1);
             renderCalendars();
         });
-
+    
         document.getElementById('nextMonth').addEventListener('click', function() {
             currentDate.setMonth(currentDate.getMonth() + 1);
             renderCalendars();
         });
-
+    
         document.getElementById('bookStayBtn').addEventListener('click', function() {
             const name = document.getElementById('newGuestName').value;
             const startDate = document.getElementById('bookStartDate').value;
             const endDate = document.getElementById('bookEndDate').value;
-
+    
             try {
                 bookStay(name, startDate, endDate);
                 renderCalendars();
@@ -385,12 +379,12 @@
                 alert(error.message);
             }
         });
-
+    
         document.getElementById('updateStayBtn').addEventListener('click', function() {
             const name = document.getElementById('guestName').value;
             const newStartDate = document.getElementById('newStartDate').value;
             const newEndDate = document.getElementById('newEndDate').value;
-
+    
             try {
                 updateStay(name, newStartDate, newEndDate);
                 renderCalendars();
@@ -401,7 +395,7 @@
                 alert(error.message);
             }
         });
-
+    
         renderCalendars();
     </script>
 </body>
